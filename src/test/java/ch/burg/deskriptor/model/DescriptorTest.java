@@ -3,6 +3,9 @@ package ch.burg.deskriptor.model;
 
 import org.junit.Test;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
 import static org.assertj.core.api.Assertions.assertThat;
 
 public class DescriptorTest {
@@ -24,9 +27,11 @@ public class DescriptorTest {
                 .withPossibleState(new State("yes"))
                 .withPossibleState(new State("yes"))
                 .withPossibleState(new State("no"))
-        .build();
+                .build();
 
         assertThat(descriptor.getPossibleSates()).hasSize(2);
+        final List<String> stateNameList = descriptor.getPossibleSates().stream().map(s -> s.getName()).collect(Collectors.toList());
+        assertThat(stateNameList).containsExactly("yes", "no");
     }
 
 }
