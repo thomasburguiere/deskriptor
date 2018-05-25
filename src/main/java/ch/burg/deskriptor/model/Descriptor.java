@@ -1,6 +1,5 @@
 package ch.burg.deskriptor.model;
 
-import com.google.common.collect.ImmutableSet;
 import lombok.Getter;
 import lombok.ToString;
 
@@ -14,11 +13,11 @@ public class Descriptor {
 
     private final String name;
 
-    private final ImmutableSet<State> possibleSates;
+    private final Set<State> possibleSates;
 
     public Descriptor(final Builder builder) {
         this.name = builder.name;
-        this.possibleSates = ImmutableSet.copyOf(builder.possibleStates);
+        this.possibleSates = builder.possibleStates;
     }
 
     public static Builder builder() {
