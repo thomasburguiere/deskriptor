@@ -4,6 +4,10 @@ import com.google.common.collect.ImmutableSet;
 import lombok.Getter;
 import lombok.ToString;
 
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.Set;
+
 @Getter
 @ToString
 public class Descriptor {
@@ -23,7 +27,7 @@ public class Descriptor {
 
     public static class Builder {
         private String name;
-        private State[] possibleStates;
+        private Set<State> possibleStates = new HashSet<>();
 
         public Builder withName(final String name) {
             this.name = name;
@@ -31,7 +35,12 @@ public class Descriptor {
         }
 
         public Builder withPossibleStates(final State... possibleStates) {
-            this.possibleStates = possibleStates;
+            this.possibleStates = new HashSet<>(Arrays.asList(possibleStates));
+            return this;
+        }
+
+        public Builder withPossibleState(final State state) {
+            this.possibleStates.add(state);
             return this;
         }
 
