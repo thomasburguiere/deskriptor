@@ -8,6 +8,7 @@ import lombok.ToString;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 @Getter
 @ToString
@@ -43,6 +44,14 @@ public class DiscreteDescriptor implements Descriptor {
 
         public Builder withName(final String name) {
             this.name = name;
+            return this;
+        }
+
+        public Builder withPossibleStates(final String... possibleStatesNames) {
+
+            this.possibleStates = Arrays.stream(possibleStatesNames)
+                    .map(State::new)
+                    .collect(Collectors.toSet());
             return this;
         }
 

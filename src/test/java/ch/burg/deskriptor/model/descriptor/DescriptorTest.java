@@ -18,7 +18,8 @@ public class DescriptorTest {
                 .withPossibleStates(new State("yes"), new State("no"))
                 .build();
 
-        assertThat(discreteDescriptor.toString()).isEqualTo("DiscreteDescriptor(name=tail presence, possibleSates=[State(name=yes), State(name=no)])");
+        final String expectedString = "DiscreteDescriptor(name=tail presence, possibleSates=[State(name=yes), State(name=no)])";
+        assertThat(discreteDescriptor.toString()).isEqualTo(expectedString);
     }
 
     @Test
@@ -28,20 +29,21 @@ public class DescriptorTest {
                 .withPossibleStates(new State("yes"), new State("no"))
                 .build();
 
-        assertThat(discreteDescriptor.toString()).isEqualTo("DiscreteDescriptor(name=tail presence, possibleSates=[State(name=yes), State(name=no)])");
+        final String expectedString = "DiscreteDescriptor(name=tail presence, possibleSates=[State(name=yes), State(name=no)])";
+        assertThat(discreteDescriptor.toString()).isEqualTo(expectedString);
     }
 
     @Test
     public void should_be_able_to_build_descriptor_with_no_duplicate_state_using_builder() {
         final DiscreteDescriptor discreteDescriptor = DiscreteDescriptor.builder()
                 .withName("tail presence")
-                .withPossibleState(new State("yes"))
-                .withPossibleState(new State("yes"))
-                .withPossibleState(new State("no"))
+                .withPossibleStates("yes", "yes", "no")
                 .build();
 
         assertThat(discreteDescriptor.getPossibleSates()).hasSize(2);
-        final List<String> stateNameList = discreteDescriptor.getPossibleSates().stream().map(s -> s.getName()).collect(Collectors.toList());
+        final List<String> stateNameList = discreteDescriptor.getPossibleSates().stream()
+                .map(s -> s.getName())
+                .collect(Collectors.toList());
         assertThat(stateNameList).containsExactly("yes", "no");
     }
 

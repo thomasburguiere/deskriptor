@@ -7,8 +7,12 @@ public class Measure {
     private final Double min;
     private final Double max;
 
-    public static Measure ofMinAndMax(final Double minAndMax){
+    public static Measure ofMinAndMax(final Double minAndMax) {
         return new Measure(minAndMax, minAndMax);
+    }
+
+    public static IntermediateBuilder withMin(final double min) {
+        return new IntermediateBuilder(min);
     }
 
     public double commonRatioWithAnotherMeasure(final Measure another) {
@@ -46,5 +50,17 @@ public class Measure {
     private Measure(final Double min, final Double max) {
         this.min = min;
         this.max = max;
+    }
+
+    public static class IntermediateBuilder {
+        private final double min;
+
+        public IntermediateBuilder(final double min) {
+            this.min = min;
+        }
+
+        public Measure andMax(final double max) {
+            return new Measure(min, max);
+        }
     }
 }
