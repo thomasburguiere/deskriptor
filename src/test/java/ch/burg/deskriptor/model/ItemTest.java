@@ -1,7 +1,9 @@
 package ch.burg.deskriptor.model;
 
 
+import ch.burg.deskriptor.model.descriptor.Descriptor;
 import ch.burg.deskriptor.model.descriptor.DiscreteDescriptor;
+import ch.burg.deskriptor.model.descriptor.NumericalDescriptor;
 import org.junit.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -16,7 +18,7 @@ public class ItemTest {
     }
 
     @Test
-    public void should_be_able_to_describe_item() {
+    public void should_be_able_to_describe_item_with_discrete_descriptor() {
         // given
         final State present = new State("present");
         final State absent = new State("absent");
@@ -37,11 +39,29 @@ public class ItemTest {
         final Item rat = Item.builder().withName("rat")
                 .describe(tailPresence).withSelectedStates(present)
                 .describe(furColor).withSelectedStates(white)
-            .build();
+                .build();
 
         // then
         assertThat(rat.getDescription().get(tailPresence).getSelectedStates()).containsExactly(present);
         assertThat(rat.getDescription().get(furColor).getSelectedStates()).containsExactly(white);
+    }
+
+    @Test
+    public void should_be_able_to_describe_item_with_numerical_descriptor() {
+        // given
+
+        final NumericalDescriptor tailLength = NumericalDescriptor.builder()
+                .withName("tailLength")
+                .withMeasurementUnit("cm")
+                .build();
+
+        // when
+        final Item rat = Item.builder().withName("rat")
+                .describe(tailLength).withMeasure(3.1)
+                .build();
+
+        // then
+        assertThat(rat.getDescription().get(tailLength).getMeasure()).isEqualTo(3.1);
     }
 
 }

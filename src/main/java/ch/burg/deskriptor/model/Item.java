@@ -2,6 +2,7 @@ package ch.burg.deskriptor.model;
 
 import ch.burg.deskriptor.model.descriptor.Descriptor;
 import ch.burg.deskriptor.model.descriptor.DiscreteDescriptor;
+import ch.burg.deskriptor.model.descriptor.NumericalDescriptor;
 import lombok.Getter;
 import lombok.ToString;
 
@@ -9,6 +10,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 
+import static ch.burg.deskriptor.model.DescriptionElement.ofMeasure;
 import static ch.burg.deskriptor.model.DescriptionElement.ofSelectedStates;
 import static java.util.Arrays.asList;
 
@@ -46,20 +48,42 @@ public class Item {
         }
 
         public static class DiscreteDescriptionBuilder {
-            private final ItemBuilder parentItemItemBuilder;
-            private final DiscreteDescriptor descriptor;
 
-            public DiscreteDescriptionBuilder(final ItemBuilder parentItemItemBuilder, final DiscreteDescriptor descriptor) {
+            private final ItemBuilder parentItemItemBuilder;
+            private final DiscreteDescriptor discreteDescriptor;
+            public DiscreteDescriptionBuilder(final ItemBuilder parentItemItemBuilder, final DiscreteDescriptor discreteDescriptor) {
                 this.parentItemItemBuilder = parentItemItemBuilder;
-                this.descriptor = descriptor;
+                this.discreteDescriptor = discreteDescriptor;
             }
 
             public ItemBuilder withSelectedStates(final State... selectedStates) {
                 final DescriptionElement descriptionElement = ofSelectedStates(new HashSet<>(asList(selectedStates)));
-                parentItemItemBuilder.description.put(descriptor, descriptionElement);
+                parentItemItemBuilder.description.put(discreteDescriptor, descriptionElement);
                 return parentItemItemBuilder;
             }
-        }
-    }
 
+        }
+
+        public NumericalDescriptorBuilder describe(final NumericalDescriptor numericalDescriptor) {
+            return new NumericalDescriptorBuilder(this, numericalDescriptor);
+        }
+
+        public class NumericalDescriptorBuilder {
+
+            private final ItemBuilder parentItemBuilder;
+            private final NumericalDescriptor numericalDescriptor;
+
+            public NumericalDescriptorBuilder(final ItemBuilder parentItemBuilder, final NumericalDescriptor numericalDescriptor) {
+                this.parentItemBuilder = parentItemBuilder;
+                this.numericalDescriptor = numericalDescriptor;
+            }
+
+            public ItemBuilder withMeasure(final Double measure) {
+                final DescriptionElement descriptionElement = ofMeasure(measure);
+                parentItemBuilder.description.put(numericalDescriptor, descriptionElement);
+                return parentItemBuilder;
+            }
+        }
+
+    }
 }
