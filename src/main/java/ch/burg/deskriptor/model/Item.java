@@ -32,13 +32,16 @@ public class Item implements Treeable {
         return new ItemBuilder();
     }
 
-    public Double getMeasureFor(final NumericalDescriptor numericalDescriptor) {
+    public Measure getMeasureFor(final NumericalDescriptor numericalDescriptor) {
         return description.get(numericalDescriptor).getMeasure();
     }
 
-
     public Set<State> getSelectedStatesFor(final DiscreteDescriptor discreteDescriptor) {
         return description.get(discreteDescriptor).getSelectedStates();
+    }
+
+    public boolean isDescriptionUnknownFor(final Descriptor descriptor) {
+        return description.get(descriptor).isUnknown();
     }
 
     public static class ItemBuilder {
@@ -89,7 +92,7 @@ public class Item implements Treeable {
                 this.numericalDescriptor = numericalDescriptor;
             }
 
-            public ItemBuilder withMeasure(final Double measure) {
+            public ItemBuilder withMeasure(final Measure measure) {
                 final DescriptionElement descriptionElement = ofMeasure(measure);
                 parentItemBuilder.description.put(numericalDescriptor, descriptionElement);
                 return parentItemBuilder;

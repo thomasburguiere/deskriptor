@@ -5,6 +5,7 @@ import ch.burg.deskriptor.model.descriptor.DiscreteDescriptor;
 import ch.burg.deskriptor.model.descriptor.NumericalDescriptor;
 import org.junit.Test;
 
+import static ch.burg.deskriptor.model.Measure.ofMinAndMax;
 import static org.assertj.core.api.Assertions.assertThat;
 
 public class ItemTest {
@@ -56,11 +57,12 @@ public class ItemTest {
 
         // when
         final Item rat = Item.builder().withName("rat")
-                .describe(tailLength).withMeasure(3.1)
+                .describe(tailLength).withMeasure(ofMinAndMax(3.1))
                 .build();
 
         // then
-        assertThat(rat.getMeasureFor(tailLength)).isEqualTo(3.1);
+        assertThat(rat.getMeasureFor(tailLength).getMax()).isEqualTo(3.1);
+        assertThat(rat.getMeasureFor(tailLength).getMin()).isEqualTo(3.1);
     }
 
 }
