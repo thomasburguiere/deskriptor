@@ -23,10 +23,10 @@ public class DiscriminantPowerService {
 
     public Double calculateDiscriminantPower(final Descriptor descriptor,
                                              final List<Item> items,
-                                             final Node<Descriptor> dependencyTreeRootNode) {
+                                             final Node<Descriptor> dependencyTreeRootNode,
+                                             final ScoreMethod scoreMethod) {
         double out = 0;
         int count = 0;
-        final ScoreMethod scoreMethod = ScoreMethod.XPER;
 
         if (descriptor.isNumerical()) {
             for (int i1 = 0; i1 < items.size() - 1; i1++) {
@@ -175,7 +175,7 @@ public class DiscriminantPowerService {
             return 0;
         }
 
-        commonRatio = measure1.commonRatioWithAnotherMeasure(measure1);
+        commonRatio = measure1.commonRatioWithAnotherMeasure(measure2);
 
 
         if (commonRatio <= 0) {
@@ -235,15 +235,15 @@ public class DiscriminantPowerService {
                     item.getSelectedStatesFor((DiscreteDescriptor) descriptorNode.getParent().getContent());
 
 
-            int numberOfRemaniningApplicableStates = parentDescriptorSelectedStates.size();
+            int numberOfRemainingApplicableStates = parentDescriptorSelectedStates.size();
 
 
             for (final State inapplicableState : inapplicableStates) {
                 if (parentDescriptorSelectedStates.contains(inapplicableState)) {
-                    numberOfRemaniningApplicableStates--;
+                    numberOfRemainingApplicableStates--;
                 }
             }
-            if (numberOfRemaniningApplicableStates == 0) {
+            if (numberOfRemainingApplicableStates == 0) {
                 return true;
             }
 
