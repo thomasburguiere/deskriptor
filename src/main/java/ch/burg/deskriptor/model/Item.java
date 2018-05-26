@@ -9,6 +9,7 @@ import lombok.ToString;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
 
 import static ch.burg.deskriptor.model.DescriptionElement.ofMeasure;
 import static ch.burg.deskriptor.model.DescriptionElement.ofSelectedStates;
@@ -16,7 +17,7 @@ import static java.util.Arrays.asList;
 
 @Getter
 @ToString
-public class Item {
+public class Item implements Treeable{
 
     private final String name;
     private final Map<Descriptor, DescriptionElement> description;
@@ -28,6 +29,15 @@ public class Item {
 
     public static ItemBuilder builder() {
         return new ItemBuilder();
+    }
+
+    public Double getMeasureFor(final NumericalDescriptor numericalDescriptor) {
+        return description.get(numericalDescriptor).getMeasure();
+    }
+
+
+    public Set<State> getSelectedStatesFor(final DiscreteDescriptor discreteDescriptor) {
+        return description.get(discreteDescriptor).getSelectedStates();
     }
 
     public static class ItemBuilder {
@@ -68,7 +78,7 @@ public class Item {
             return new NumericalDescriptorBuilder(this, numericalDescriptor);
         }
 
-        public class NumericalDescriptorBuilder {
+        public static class NumericalDescriptorBuilder {
 
             private final ItemBuilder parentItemBuilder;
             private final NumericalDescriptor numericalDescriptor;

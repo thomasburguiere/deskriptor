@@ -1,7 +1,6 @@
 package ch.burg.deskriptor.model;
 
 
-import ch.burg.deskriptor.model.descriptor.Descriptor;
 import ch.burg.deskriptor.model.descriptor.DiscreteDescriptor;
 import ch.burg.deskriptor.model.descriptor.NumericalDescriptor;
 import org.junit.Test;
@@ -42,8 +41,8 @@ public class ItemTest {
                 .build();
 
         // then
-        assertThat(rat.getDescription().get(tailPresence).getSelectedStates()).containsExactly(present);
-        assertThat(rat.getDescription().get(furColor).getSelectedStates()).containsExactly(white);
+        assertThat(rat.getSelectedStatesFor(tailPresence)).containsExactly(present);
+        assertThat(rat.getSelectedStatesFor(furColor)).containsExactly(white);
     }
 
     @Test
@@ -61,7 +60,7 @@ public class ItemTest {
                 .build();
 
         // then
-        assertThat(rat.getDescription().get(tailLength).getMeasure()).isEqualTo(3.1);
+        assertThat(rat.getMeasureFor(tailLength)).isEqualTo(3.1);
     }
 
 }

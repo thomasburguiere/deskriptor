@@ -25,6 +25,16 @@ public class DiscreteDescriptor implements Descriptor {
         return new Builder();
     }
 
+    @Override
+    public boolean isNumerical() {
+        return false;
+    }
+
+    @Override
+    public boolean isDiscrete() {
+        return true;
+    }
+
     public static class Builder {
         private String name;
         private Set<State> possibleStates = new HashSet<>();

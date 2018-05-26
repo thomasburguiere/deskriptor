@@ -19,6 +19,16 @@ public class NumericalDescriptor implements Descriptor {
         return new Builder();
     }
 
+    @Override
+    public boolean isNumerical() {
+        return true;
+    }
+
+    @Override
+    public boolean isDiscrete() {
+        return false;
+    }
+
     public static class Builder {
         private String name;
         private String measurementUnit;
