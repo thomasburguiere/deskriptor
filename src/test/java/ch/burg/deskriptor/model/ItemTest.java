@@ -1,6 +1,7 @@
 package ch.burg.deskriptor.model;
 
 
+import ch.burg.deskriptor.model.descriptor.DiscreteDescriptor;
 import org.junit.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -19,14 +20,14 @@ public class ItemTest {
         // given
         final State present = new State("present");
         final State absent = new State("absent");
-        final Descriptor tailPresence = Descriptor.builder()
+        final DiscreteDescriptor tailPresence = DiscreteDescriptor.builder()
                 .withName("tail presence")
                 .withPossibleStates(present, absent)
                 .build();
 
         final State black = new State("black");
         final State white = new State("white");
-        final Descriptor furColor = Descriptor.builder()
+        final DiscreteDescriptor furColor = DiscreteDescriptor.builder()
                 .withName("fur color")
                 .withPossibleStates(white, black)
                 .build();
@@ -39,8 +40,8 @@ public class ItemTest {
             .build();
 
         // then
-        assertThat(rat.getDescription().get(tailPresence)).containsExactly(present);
-        assertThat(rat.getDescription().get(furColor)).containsExactly(white);
+        assertThat(rat.getDescription().get(tailPresence).getSelectedStates()).containsExactly(present);
+        assertThat(rat.getDescription().get(furColor).getSelectedStates()).containsExactly(white);
     }
 
 }

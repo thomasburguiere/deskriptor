@@ -1,5 +1,6 @@
-package ch.burg.deskriptor.model;
+package ch.burg.deskriptor.model.descriptor;
 
+import ch.burg.deskriptor.model.State;
 import lombok.Getter;
 import lombok.ToString;
 
@@ -9,13 +10,13 @@ import java.util.Set;
 
 @Getter
 @ToString
-public class Descriptor {
+public class DiscreteDescriptor implements Descriptor {
 
     private final String name;
 
     private final Set<State> possibleSates;
 
-    public Descriptor(final Builder builder) {
+    public DiscreteDescriptor(final Builder builder) {
         this.name = builder.name;
         this.possibleSates = builder.possibleStates;
     }
@@ -43,8 +44,8 @@ public class Descriptor {
             return this;
         }
 
-        public Descriptor build() {
-            return new Descriptor(this);
+        public DiscreteDescriptor build() {
+            return new DiscreteDescriptor(this);
         }
     }
 }
