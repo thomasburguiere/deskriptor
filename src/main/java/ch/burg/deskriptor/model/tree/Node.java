@@ -38,7 +38,7 @@ public class Node<T extends Treeable> {
                 .collect(Collectors.toList());
 
 
-        return new Node<T>(null, null, null, children);
+        return new Node<>(null, null, null, children);
     }
 
     public Optional<Node<T>> getNodeContainingContent(final T content) {

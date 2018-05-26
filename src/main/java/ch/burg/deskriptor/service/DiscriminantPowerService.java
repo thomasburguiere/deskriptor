@@ -57,7 +57,7 @@ public class DiscriminantPowerService {
                         final Item item2 = items.get(i2);
                         final float tmp;
                         tmp = compareWithCategoricalDescriptor((DiscreteDescriptor) descriptor, item1,
-                                item2, scoreMethod, dependencyTreeRootNode);//, descriptionMatrix, descriptorNodeMap);
+                                item2, scoreMethod, dependencyTreeRootNode);
                         if (tmp >= 0) {
                             out += tmp;
                             count++;
@@ -78,9 +78,7 @@ public class DiscriminantPowerService {
     private float compareWithCategoricalDescriptor(final DiscreteDescriptor descriptor, final Item item1, final Item item2, final ScoreMethod scoreMethod, final Node<Descriptor> dependencyTreeRootNode) {
 
         float out;
-        // boolean isAlwaysDescribed = true;
 
-        // int all = v.getNbModes();
         float commonAbsent = 0; // nb of common points which are absent
         float commonPresent = 0; // nb of common points which are present
         float other = 0;
@@ -125,18 +123,17 @@ public class DiscriminantPowerService {
         }
 
         if (scoreMethod == SOKAL_MICHENER) {
-            out = 1 - ((commonPresent + commonAbsent) / (commonPresent + commonAbsent + other));
-            // round to 10^-3
-//            out = Utils.roundFloat(out, 3);
-        }
-        else if (scoreMethod == JACCARD) {
-            try {
-                // // case where description are empty
-                out = 1 - (commonPresent / (commonPresent + other));
-                // // round to 10^-3
-//                out = Utils.roundFloat(out, 3);
-            } catch (final ArithmeticException a) {
+            if (commonPresent + commonAbsent + other == 0) {
                 out = 0;
+            } else {
+                out = 1 - ((commonPresent + commonAbsent) / (commonPresent + commonAbsent + other));
+            }
+        } else if (scoreMethod == JACCARD) {
+            if (commonPresent + other == 0) {
+                out = 0;
+            } else {
+
+                out = 1 - (commonPresent / (commonPresent + other));
             }
         }
         // // yes or no method (Xper)
