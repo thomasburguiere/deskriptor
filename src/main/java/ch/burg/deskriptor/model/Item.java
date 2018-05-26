@@ -3,6 +3,7 @@ package ch.burg.deskriptor.model;
 import ch.burg.deskriptor.model.descriptor.Descriptor;
 import ch.burg.deskriptor.model.descriptor.DiscreteDescriptor;
 import ch.burg.deskriptor.model.descriptor.NumericalDescriptor;
+import ch.burg.deskriptor.model.tree.Treeable;
 import lombok.Getter;
 import lombok.ToString;
 
@@ -17,7 +18,7 @@ import static java.util.Arrays.asList;
 
 @Getter
 @ToString
-public class Item implements Treeable{
+public class Item implements Treeable {
 
     private final String name;
     private final Map<Descriptor, DescriptionElement> description;

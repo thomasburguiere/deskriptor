@@ -1,10 +1,12 @@
 package ch.burg.deskriptor.model.descriptor;
 
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.ToString;
 
 @Getter
 @ToString
+@EqualsAndHashCode
 public class NumericalDescriptor implements Descriptor {
 
     private final String name;

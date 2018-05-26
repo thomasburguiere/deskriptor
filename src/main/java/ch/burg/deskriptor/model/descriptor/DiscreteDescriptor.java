@@ -1,6 +1,7 @@
 package ch.burg.deskriptor.model.descriptor;
 
 import ch.burg.deskriptor.model.State;
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.ToString;
 
@@ -10,6 +11,7 @@ import java.util.Set;
 
 @Getter
 @ToString
+@EqualsAndHashCode
 public class DiscreteDescriptor implements Descriptor {
 
     private final String name;
