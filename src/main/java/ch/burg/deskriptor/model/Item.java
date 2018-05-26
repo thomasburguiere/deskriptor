@@ -1,15 +1,13 @@
 package ch.burg.deskriptor.model;
 
-import ch.burg.deskriptor.model.descriptor.DiscreteDescriptor;
 import ch.burg.deskriptor.model.descriptor.Descriptor;
+import ch.burg.deskriptor.model.descriptor.DiscreteDescriptor;
 import lombok.Getter;
 import lombok.ToString;
 
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
-import java.util.Set;
 
 import static ch.burg.deskriptor.model.DescriptionElement.ofSelectedStates;
 import static java.util.Arrays.asList;
