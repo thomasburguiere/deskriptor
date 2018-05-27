@@ -75,15 +75,16 @@ public class DiscriminantPowerService {
         return out;
     }
 
-    private float compareWithCategoricalDescriptor(final DiscreteDescriptor descriptor, final Item item1, final Item item2, final ScoreMethod scoreMethod, final Node<Descriptor> dependencyTreeRootNode) {
+    private static float compareWithCategoricalDescriptor(final DiscreteDescriptor descriptor, final Item item1, final Item item2, final ScoreMethod scoreMethod, final Node<Descriptor> dependencyTreeRootNode) {
 
-        float out;
+        final float out;
 
         float commonAbsent = 0; // nb of common points which are absent
         float commonPresent = 0; // nb of common points which are present
         float other = 0;
 
-        if (isInapplicable(descriptor, item1, item2, dependencyTreeRootNode)) {
+
+        if (isDescriptorInapplicableForItems(descriptor, item1, item2).withDependencyTree(dependencyTreeRootNode)) {
             return -1;
         }
 
@@ -159,7 +160,7 @@ public class DiscriminantPowerService {
         final double out;
         double commonRatio; // ratio of common values which are shared
 
-        if (isInapplicable(descriptor, item1, item2, dependencyTreeRootNode)) {
+        if (isDescriptorInapplicableForItems(descriptor, item1, item2).withDependencyTree(dependencyTreeRootNode)) {
             return -1;
         }
 
@@ -209,44 +210,67 @@ public class DiscriminantPowerService {
 
     }
 
-    private static boolean isInapplicable(
-            final Descriptor descriptor,
-            final Item item1,
-            final Item item2,
-            final Node<Descriptor> dependencyTreeRootNode
-    ) {
 
-        final Optional<Node<Descriptor>> node = dependencyTreeRootNode.getNodeContainingContent(descriptor);
-        if (node.isPresent()) {
-            return (isInapplicable(node.get(), item1) || isInapplicable(node.get(), item2));
-        }
-        return false;
+    private static InapplicabilityCalculator isDescriptorInapplicableForItems(final Descriptor descriptor, final Item... items) {
+        return new InapplicabilityCalculator(descriptor, items);
     }
 
+    private static class InapplicabilityCalculator {
+        private final Descriptor descriptor;
+        private final Item[] items;
+        private Node<Descriptor> dependencyTreeRootNode;
 
-    private static boolean isInapplicable(final Node<Descriptor> descriptorNode, final Item item) {
-        if (descriptorNode.getParent() != null) {
-            final Set<State> inapplicableStates = descriptorNode.getInapplicableState();
+        private InapplicabilityCalculator(final Descriptor descriptor, final Item[] items) {
+            this.descriptor = descriptor;
+            this.items = items;
+        }
 
-            final Set<State> parentDescriptorSelectedStates =
-                    item.getSelectedStatesFor((DiscreteDescriptor) descriptorNode.getParent().getContent());
+        private boolean withDependencyTree(final Node<Descriptor> dependencyTreeRootNode) {
+            this.dependencyTreeRootNode = dependencyTreeRootNode;
+            return calculate();
+        }
 
-
-            int numberOfRemainingApplicableStates = parentDescriptorSelectedStates.size();
-
-
-            for (final State inapplicableState : inapplicableStates) {
-                if (parentDescriptorSelectedStates.contains(inapplicableState)) {
-                    numberOfRemainingApplicableStates--;
+        private boolean calculate() {
+            final Optional<Node<Descriptor>> node = dependencyTreeRootNode.getNodeContainingContent(descriptor);
+            if (node.isPresent()) {
+                for (final Item item : items) {
+                    if (isDescriptorInNodeInapplicableForItem(node.get(), item)) {
+                        return true;
+                    }
                 }
             }
-            if (numberOfRemainingApplicableStates == 0) {
-                return true;
-            }
-
-            return isInapplicable(descriptorNode.getParent(), item);
-
+            return false;
         }
-        return false;
+
+
+        private static boolean isDescriptorInNodeInapplicableForItem(final Node<Descriptor> descriptorNode, final Item item) {
+            final Node<Descriptor> parentNode = descriptorNode.getParent();
+
+            if (parentNode != null) {
+                final Set<State> inapplicableStates = descriptorNode.getInapplicableState();
+
+                final Set<State> parentDescriptorSelectedStates =
+                        item.getSelectedStatesFor((DiscreteDescriptor) parentNode.getContent());
+
+
+                int numberOfRemainingApplicableStates = parentDescriptorSelectedStates.size();
+
+
+                for (final State inapplicableState : inapplicableStates) {
+                    if (parentDescriptorSelectedStates.contains(inapplicableState)) {
+                        numberOfRemainingApplicableStates--;
+                    }
+                }
+                if (numberOfRemainingApplicableStates == 0) {
+                    return true;
+                }
+
+                return isDescriptorInNodeInapplicableForItem(parentNode, item);
+
+            }
+            return false;
+        }
     }
+
+
 }

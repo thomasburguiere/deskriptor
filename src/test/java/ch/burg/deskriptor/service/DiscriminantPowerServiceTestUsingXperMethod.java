@@ -14,7 +14,7 @@ import java.util.List;
 import static ch.burg.deskriptor.service.DiscriminantPowerService.ScoreMethod.XPER;
 import static org.assertj.core.api.Assertions.assertThat;
 
-public class DiscriminantPowerServiceTest {
+public class DiscriminantPowerServiceTestUsingXperMethod {
 
     private final NumericalDescriptor tailLength = NumericalDescriptor.builder()
             .withName("tailLength")
@@ -33,6 +33,7 @@ public class DiscriminantPowerServiceTest {
 
 
     private final DiscriminantPowerService service = new DiscriminantPowerService();
+    private final DiscriminantPowerService.ScoreMethod xperScoreMethod = XPER;
 
     @Test
     public void should_return_score_of_1_for_discrete_descriptor_if_it_allows_to_discriminate_two_items() {
@@ -47,10 +48,11 @@ public class DiscriminantPowerServiceTest {
                 .describe(furColor).withSelectedStates(white)
                 .build();
 
+
         final List<Item> items = List.of(blackRat, whiteRat);
 
         // when
-        assertThat(service.calculateDiscriminantPower(furColor, items, dependencyTreeRootNode, XPER)).isEqualTo(1.0);
+        assertThat(service.calculateDiscriminantPower(furColor, items, dependencyTreeRootNode, xperScoreMethod)).isEqualTo(1.0);
     }
 
     @Test
@@ -69,7 +71,7 @@ public class DiscriminantPowerServiceTest {
         final List<Item> items = List.of(blackRat1, blackRat2);
 
         // when
-        assertThat(service.calculateDiscriminantPower(furColor, items, dependencyTreeRootNode, XPER)).isEqualTo(0.0);
+        assertThat(service.calculateDiscriminantPower(furColor, items, dependencyTreeRootNode, xperScoreMethod)).isEqualTo(0.0);
     }
 
     @Test
@@ -88,7 +90,7 @@ public class DiscriminantPowerServiceTest {
         final List<Item> items = List.of(rat1, rat2);
 
         // when
-        assertThat(service.calculateDiscriminantPower(tailLength, items, dependencyTreeRootNode, XPER)).isEqualTo(1.0);
+        assertThat(service.calculateDiscriminantPower(tailLength, items, dependencyTreeRootNode, xperScoreMethod)).isEqualTo(1.0);
     }
 
     @Test
@@ -107,6 +109,6 @@ public class DiscriminantPowerServiceTest {
         final List<Item> items = List.of(rat1, rat2);
 
         // when
-        assertThat(service.calculateDiscriminantPower(tailLength, items, dependencyTreeRootNode, XPER)).isEqualTo(0.0);
+        assertThat(service.calculateDiscriminantPower(tailLength, items, dependencyTreeRootNode, xperScoreMethod)).isEqualTo(0.0);
     }
 }
