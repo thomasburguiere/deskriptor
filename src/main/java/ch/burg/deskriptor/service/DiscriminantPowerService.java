@@ -9,11 +9,11 @@ import ch.burg.deskriptor.model.descriptor.NumericalDescriptor;
 import ch.burg.deskriptor.model.tree.Node;
 
 import java.util.List;
-import java.util.Optional;
 import java.util.Set;
 
 import static ch.burg.deskriptor.service.DiscriminantPowerService.ScoreMethod.JACCARD;
 import static ch.burg.deskriptor.service.DiscriminantPowerService.ScoreMethod.SOKAL_MICHENER;
+import static ch.burg.deskriptor.service.InapplicabilityCalculator.isDescriptorInapplicableForItems;
 
 public class DiscriminantPowerService {
 
@@ -209,68 +209,4 @@ public class DiscriminantPowerService {
         return out;
 
     }
-
-
-    private static InapplicabilityCalculator isDescriptorInapplicableForItems(final Descriptor descriptor, final Item... items) {
-        return new InapplicabilityCalculator(descriptor, items);
-    }
-
-    private static class InapplicabilityCalculator {
-        private final Descriptor descriptor;
-        private final Item[] items;
-        private Node<Descriptor> dependencyTreeRootNode;
-
-        private InapplicabilityCalculator(final Descriptor descriptor, final Item[] items) {
-            this.descriptor = descriptor;
-            this.items = items;
-        }
-
-        private boolean withDependencyTree(final Node<Descriptor> dependencyTreeRootNode) {
-            this.dependencyTreeRootNode = dependencyTreeRootNode;
-            return calculate();
-        }
-
-        private boolean calculate() {
-            final Optional<Node<Descriptor>> node = dependencyTreeRootNode.getNodeContainingContent(descriptor);
-            if (node.isPresent()) {
-                for (final Item item : items) {
-                    if (isDescriptorInNodeInapplicableForItem(node.get(), item)) {
-                        return true;
-                    }
-                }
-            }
-            return false;
-        }
-
-
-        private static boolean isDescriptorInNodeInapplicableForItem(final Node<Descriptor> descriptorNode, final Item item) {
-            final Node<Descriptor> parentNode = descriptorNode.getParent();
-
-            if (parentNode != null) {
-                final Set<State> inapplicableStates = descriptorNode.getInapplicableState();
-
-                final Set<State> parentDescriptorSelectedStates =
-                        item.getSelectedStatesFor((DiscreteDescriptor) parentNode.getContent());
-
-
-                int numberOfRemainingApplicableStates = parentDescriptorSelectedStates.size();
-
-
-                for (final State inapplicableState : inapplicableStates) {
-                    if (parentDescriptorSelectedStates.contains(inapplicableState)) {
-                        numberOfRemainingApplicableStates--;
-                    }
-                }
-                if (numberOfRemainingApplicableStates == 0) {
-                    return true;
-                }
-
-                return isDescriptorInNodeInapplicableForItem(parentNode, item);
-
-            }
-            return false;
-        }
-    }
-
-
 }
