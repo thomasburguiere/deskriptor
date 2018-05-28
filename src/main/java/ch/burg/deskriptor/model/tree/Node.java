@@ -1,8 +1,11 @@
 package ch.burg.deskriptor.model.tree;
 
 import ch.burg.deskriptor.model.State;
+import ch.burg.deskriptor.model.descriptor.Descriptor;
+import ch.burg.deskriptor.model.descriptor.DiscreteDescriptor;
 import lombok.Getter;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
@@ -16,10 +19,10 @@ public class Node<T extends Treeable> {
     private final Set<State> inapplicableState;
     private final List<Node<T>> children;
 
-    private Node(final T content,
-                 final Node<T> parent,
-                 final Set<State> inapplicableState,
-                 final List<Node<T>> children) {
+    public Node(final T content,
+                final Node<T> parent,
+                final Set<State> inapplicableState,
+                final List<Node<T>> children) {
 
         this.content = content;
         this.parent = parent;
@@ -27,9 +30,9 @@ public class Node<T extends Treeable> {
         this.children = children;
     }
 
-    public static <T extends Treeable> Node<T> flatTree(final List<T> childrenContent) {
+    public static <T extends Treeable> List<Node<T>> flatTree(final List<T> childrenContent) {
 
-        final List<Node<T>> children = childrenContent.stream()
+        return childrenContent.stream()
                 .map(content -> new Node<>(
                         content,
                         null,
@@ -37,12 +40,13 @@ public class Node<T extends Treeable> {
                         null))
                 .collect(Collectors.toList());
 
-
-        return new Node<>(null, null, null, children);
     }
 
-    public Optional<Node<T>> getNodeContainingContent(final T content) {
-        return children.stream().filter(n -> n.content.equals(content)).findFirst();
+    public static <T extends Treeable> Optional<Node<T>> getNodeContainingContentInList(
+            final T content,
+            final List<Node<T>> list) {
+
+        return list.stream().filter(n -> n.content.equals(content)).findFirst();
     }
 
 }

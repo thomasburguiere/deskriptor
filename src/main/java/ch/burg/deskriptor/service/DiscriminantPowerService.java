@@ -21,50 +21,26 @@ public class DiscriminantPowerService {
         SOKAL_MICHENER, JACCARD, XPER
     }
 
+
     public Double calculateDiscriminantPower(final Descriptor descriptor,
                                              final List<Item> items,
-                                             final Node<Descriptor> dependencyTreeRootNode,
+                                             final List<Node<Descriptor>> dependencyNodes,
                                              final ScoreMethod scoreMethod) {
         double out = 0;
         int count = 0;
 
         if (descriptor.isNumerical()) {
-            for (int i1 = 0; i1 < items.size() - 1; i1++) {
-                final Item item1 = items.get(i1);
-                for (int i2 = i1 + 1; i2 < items.size(); i2++) {
-                    final Item item2 = items.get(i2);
-                    final double tmp;
-                    tmp = compareWithNumericalDescriptor((NumericalDescriptor) descriptor, item1, item2
-                            , dependencyTreeRootNode// , descriptionMatrix, descriptorNodeMap
-                            , scoreMethod
-                    );
-                    if (tmp >= 0) {
-                        out += tmp;
-                        count++;
-                    }
-                }
-            }
+            final CalculationResult result =
+                    dPowerForNumericalDescriptor((NumericalDescriptor) descriptor, items, dependencyNodes, scoreMethod);
+            out += result.out;
+            count += result.count;
         }
 
         if (descriptor.isDiscrete()) {
-            if (((DiscreteDescriptor) descriptor).getPossibleSates().isEmpty()) {
-                out += 0;
-                count++;
-            } else {
-                for (int i1 = 0; i1 < items.size() - 1; i1++) {
-                    final Item item1 = items.get(i1);
-                    for (int i2 = i1 + 1; i2 < items.size(); i2++) {
-                        final Item item2 = items.get(i2);
-                        final float tmp;
-                        tmp = compareWithCategoricalDescriptor((DiscreteDescriptor) descriptor, item1,
-                                item2, scoreMethod, dependencyTreeRootNode);
-                        if (tmp >= 0) {
-                            out += tmp;
-                            count++;
-                        }
-                    }
-                }
-            }
+            final CalculationResult result =
+                    dPowerForDiscreteDescriptor((DiscreteDescriptor) descriptor, items, dependencyNodes, scoreMethod);
+            out += result.out;
+            count += result.count;
         }
 
 
@@ -75,16 +51,70 @@ public class DiscriminantPowerService {
         return out;
     }
 
-    private static float compareWithCategoricalDescriptor(final DiscreteDescriptor descriptor, final Item item1, final Item item2, final ScoreMethod scoreMethod, final Node<Descriptor> dependencyTreeRootNode) {
+    private static class CalculationResult {
+        private double out = 0;
+        private int count = 0;
+    }
 
-        final float out;
+    private CalculationResult dPowerForNumericalDescriptor(final NumericalDescriptor descriptor,
+                                                           final List<Item> items,
+                                                           final List<Node<Descriptor>> dependencyNodes,
+                                                           final ScoreMethod scoreMethod) {
+        final CalculationResult result = new CalculationResult();
+        for (int i1 = 0; i1 < items.size() - 1; i1++) {
+            final Item item1 = items.get(i1);
+            for (int i2 = i1 + 1; i2 < items.size(); i2++) {
+                final Item item2 = items.get(i2);
+                final double tmp;
+                tmp = compareWithNumericalDescriptor((NumericalDescriptor) descriptor, item1, item2
+                        , dependencyNodes// , descriptionMatrix, descriptorNodeMap
+                        , scoreMethod
+                );
+                if (tmp >= 0) {
+                    result.out += tmp;
+                    result.count++;
+                }
+            }
+        }
+        return result;
+    }
+
+    private CalculationResult dPowerForDiscreteDescriptor(final DiscreteDescriptor descriptor,
+                                                          final List<Item> items,
+                                                          final List<Node<Descriptor>> dependencyNodes,
+                                                          final ScoreMethod scoreMethod) {
+        final CalculationResult result = new CalculationResult();
+
+        if (descriptor.getPossibleSates().isEmpty()) {
+            result.out += 0;
+            result.count++;
+        } else {
+            for (int i1 = 0; i1 < items.size() - 1; i1++) {
+                final Item item1 = items.get(i1);
+                for (int i2 = i1 + 1; i2 < items.size(); i2++) {
+                    final Item item2 = items.get(i2);
+                    final float tmp =
+                            compareWithCategoricalDescriptor(descriptor, item1, item2, scoreMethod, dependencyNodes);
+                    if (tmp >= 0) {
+                        result.out += tmp;
+                        result.count++;
+                    }
+                }
+            }
+        }
+
+
+        return result;
+    }
+
+    private static float compareWithCategoricalDescriptor(final DiscreteDescriptor descriptor, final Item item1, final Item item2, final ScoreMethod scoreMethod, final List<Node<Descriptor>> dependencyNodes) {
 
         float commonAbsent = 0; // nb of common points which are absent
         float commonPresent = 0; // nb of common points which are present
         float other = 0;
 
 
-        if (isDescriptorInapplicableForItems(descriptor, item1, item2).withDependencyTree(dependencyTreeRootNode)) {
+        if (isDescriptorInapplicableForItems(descriptor, item1, item2).withDependencyNodes(dependencyNodes)) {
             return -1;
         }
 
@@ -125,28 +155,22 @@ public class DiscriminantPowerService {
 
         if (scoreMethod == SOKAL_MICHENER) {
             if (commonPresent + commonAbsent + other == 0) {
-                out = 0;
-            } else {
-                out = 1 - ((commonPresent + commonAbsent) / (commonPresent + commonAbsent + other));
+                return 0;
             }
-        } else if (scoreMethod == JACCARD) {
+            return 1 - ((commonPresent + commonAbsent) / (commonPresent + commonAbsent + other));
+        }
+        if (scoreMethod == JACCARD) {
             if (commonPresent + other == 0) {
-                out = 0;
-            } else {
-
-                out = 1 - (commonPresent / (commonPresent + other));
+                return 0;
             }
+            return 1 - (commonPresent / (commonPresent + other));
         }
-        // // yes or no method (Xper)
-        else {
-            if ((commonPresent == 0) && (other > 0)) {
-                out = 1;
-            } else {
-                out = 0;
-            }
+        // /scoreMethod == XPER
+        if ((commonPresent == 0) && (other > 0)) {
+            return 1;
         }
+        return 0;
 
-        return out;
     }
 
 
@@ -154,13 +178,13 @@ public class DiscriminantPowerService {
             final NumericalDescriptor descriptor,
             final Item item1,
             final Item item2,
-            final Node<Descriptor> dependencyTreeRootNode,
+            final List<Node<Descriptor>> dependencyNodes,
             final ScoreMethod scoreMethod
     ) {
         final double out;
         double commonRatio; // ratio of common values which are shared
 
-        if (isDescriptorInapplicableForItems(descriptor, item1, item2).withDependencyTree(dependencyTreeRootNode)) {
+        if (isDescriptorInapplicableForItems(descriptor, item1, item2).withDependencyNodes(dependencyNodes)) {
             return -1;
         }
 

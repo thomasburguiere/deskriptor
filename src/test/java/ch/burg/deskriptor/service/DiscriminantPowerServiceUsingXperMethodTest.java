@@ -29,7 +29,7 @@ public class DiscriminantPowerServiceUsingXperMethodTest {
             .withPossibleStates(white, black)
             .build();
 
-    private final Node<Descriptor> dependencyTreeRootNode = Node.flatTree(List.of(furColor, tailLength));
+    private final List<Node<Descriptor>> dependencyTreeNodes = Node.flatTree(List.of(furColor, tailLength));
 
 
     private final DiscriminantPowerService service = new DiscriminantPowerService();
@@ -51,7 +51,7 @@ public class DiscriminantPowerServiceUsingXperMethodTest {
         final List<Item> items = List.of(blackRat, whiteRat);
 
         // when
-        assertThat(service.calculateDiscriminantPower(furColor, items, dependencyTreeRootNode, XPER)).isEqualTo(1.0);
+        assertThat(service.calculateDiscriminantPower(furColor, items, dependencyTreeNodes, XPER)).isEqualTo(1.0);
     }
 
     @Test
@@ -70,7 +70,7 @@ public class DiscriminantPowerServiceUsingXperMethodTest {
         final List<Item> items = List.of(blackRat1, blackRat2);
 
         // when
-        assertThat(service.calculateDiscriminantPower(furColor, items, dependencyTreeRootNode, XPER)).isEqualTo(0.0);
+        assertThat(service.calculateDiscriminantPower(furColor, items, dependencyTreeNodes, XPER)).isEqualTo(0.0);
     }
 
     @Test
@@ -89,7 +89,7 @@ public class DiscriminantPowerServiceUsingXperMethodTest {
         final List<Item> items = List.of(rat1, rat2);
 
         // when
-        assertThat(service.calculateDiscriminantPower(tailLength, items, dependencyTreeRootNode, XPER)).isEqualTo(1.0);
+        assertThat(service.calculateDiscriminantPower(tailLength, items, dependencyTreeNodes, XPER)).isEqualTo(1.0);
     }
 
     @Test
@@ -108,6 +108,6 @@ public class DiscriminantPowerServiceUsingXperMethodTest {
         final List<Item> items = List.of(rat1, rat2);
 
         // when
-        assertThat(service.calculateDiscriminantPower(tailLength, items, dependencyTreeRootNode, XPER)).isEqualTo(0.0);
+        assertThat(service.calculateDiscriminantPower(tailLength, items, dependencyTreeNodes, XPER)).isEqualTo(0.0);
     }
 }

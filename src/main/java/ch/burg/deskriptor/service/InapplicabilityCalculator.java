@@ -6,30 +6,33 @@ import ch.burg.deskriptor.model.descriptor.Descriptor;
 import ch.burg.deskriptor.model.descriptor.DiscreteDescriptor;
 import ch.burg.deskriptor.model.tree.Node;
 
+import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 
 class InapplicabilityCalculator {
-    static InapplicabilityCalculator isDescriptorInapplicableForItems(final Descriptor descriptor, final Item... items) {
-        return new InapplicabilityCalculator(descriptor, items);
-    }
 
     private final Descriptor descriptor;
     private final Item[] items;
-    private Node<Descriptor> dependencyTreeRootNode;
+    private List<Node<Descriptor>> dependencyNodes;
 
     private InapplicabilityCalculator(final Descriptor descriptor, final Item[] items) {
         this.descriptor = descriptor;
         this.items = items;
     }
 
-    boolean withDependencyTree(final Node<Descriptor> dependencyTreeRootNode) {
-        this.dependencyTreeRootNode = dependencyTreeRootNode;
+
+    static InapplicabilityCalculator isDescriptorInapplicableForItems(final Descriptor descriptor, final Item... items) {
+        return new InapplicabilityCalculator(descriptor, items);
+    }
+
+    boolean withDependencyNodes(List<Node<Descriptor>> dependencyNodes) {
+        this.dependencyNodes = dependencyNodes;
         return calculate();
     }
 
     private boolean calculate() {
-        final Optional<Node<Descriptor>> node = dependencyTreeRootNode.getNodeContainingContent(descriptor);
+        final Optional<Node<Descriptor>> node = Node.getNodeContainingContentInList(descriptor, dependencyNodes);
         if (node.isPresent()) {
             for (final Item item : items) {
                 if (isDescriptorInNodeInapplicableForItem(node.get(), item)) {
@@ -41,7 +44,7 @@ class InapplicabilityCalculator {
     }
 
 
-    private static boolean isDescriptorInNodeInapplicableForItem(final Node<Descriptor> descriptorNode, final Item item) {
+    static boolean isDescriptorInNodeInapplicableForItem(final Node<Descriptor> descriptorNode, final Item item) {
         final Node<Descriptor> parentNode = descriptorNode.getParent();
 
         if (parentNode != null) {
