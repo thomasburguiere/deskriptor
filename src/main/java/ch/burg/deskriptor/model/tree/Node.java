@@ -1,11 +1,8 @@
 package ch.burg.deskriptor.model.tree;
 
 import ch.burg.deskriptor.model.State;
-import ch.burg.deskriptor.model.descriptor.Descriptor;
-import ch.burg.deskriptor.model.descriptor.DiscreteDescriptor;
 import lombok.Getter;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
