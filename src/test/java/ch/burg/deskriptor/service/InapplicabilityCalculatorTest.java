@@ -114,4 +114,20 @@ public class InapplicabilityCalculatorTest {
         assertThat(isInapplicable).isFalse();
     }
 
+    @Test
+    public void should_calculate_that_a_descriptor_is_applicable_for_two_items_if_no_dependency_node_are_provided() {
+
+        // given
+        final Item itemWhereInapplicable = tailLessRat;
+        final Item itemWhereApplicable = normalRat1;
+
+        // when
+        final boolean isInapplicable =
+                InapplicabilityCalculator.isDescriptorInapplicableForItems(tailLength, itemWhereInapplicable, itemWhereApplicable)
+                        .withDependencyNodes(List.of());
+
+        // then
+        assertThat(isInapplicable).isFalse();
+    }
+
 }
