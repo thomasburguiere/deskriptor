@@ -7,12 +7,14 @@ import ch.burg.deskriptor.model.descriptor.Descriptor;
 import ch.burg.deskriptor.model.descriptor.DiscreteDescriptor;
 import ch.burg.deskriptor.model.descriptor.NumericalDescriptor;
 import ch.burg.deskriptor.model.tree.Node;
+import lombok.Getter;
 
 import java.util.List;
 import java.util.Set;
 
 import static ch.burg.deskriptor.service.DiscriminantPowerService.ScoreMethod.JACCARD;
 import static ch.burg.deskriptor.service.DiscriminantPowerService.ScoreMethod.SOKAL_MICHENER;
+import static ch.burg.deskriptor.service.DiscriminantPowerService.ScoreMethod.XPER;
 import static ch.burg.deskriptor.service.InapplicabilityCalculator.isDescriptorInapplicableForItems;
 
 public class DiscriminantPowerService {
@@ -26,27 +28,27 @@ public class DiscriminantPowerService {
                                              final List<Item> items,
                                              final List<Node<Descriptor>> dependencyNodes,
                                              final ScoreMethod scoreMethod) {
-        double out = 0;
-        int count = 0;
+        final double out;
+        final int count;
 
         if (descriptor.isNumerical()) {
             final CalculationResult result =
                     dPowerForNumericalDescriptor((NumericalDescriptor) descriptor, items, dependencyNodes, scoreMethod);
-            out += result.out;
-            count += result.count;
-        }
-
-        if (descriptor.isDiscrete()) {
+            out = result.out;
+            count = result.count;
+        } else if (descriptor.isDiscrete()) {
             final CalculationResult result =
                     dPowerForDiscreteDescriptor((DiscreteDescriptor) descriptor, items, dependencyNodes, scoreMethod);
-            out += result.out;
-            count += result.count;
+            out = result.out;
+            count = result.count;
+        } else {
+            throw new IllegalStateException("descriptor must be either Discrete or Numerical");
         }
 
 
         if (out != 0 && count != 0) {
             // to normalize the number
-            out = out / count;
+            return out / count;
         }
         return out;
     }
@@ -107,11 +109,11 @@ public class DiscriminantPowerService {
         return result;
     }
 
-    private static float compareWithDiscreteDescriptor(final DiscreteDescriptor descriptor, final Item item1, final Item item2, final ScoreMethod scoreMethod, final List<Node<Descriptor>> dependencyNodes) {
-
-        float commonAbsent = 0; // nb of common points which are absent
-        float commonPresent = 0; // nb of common points which are present
-        float other = 0;
+    private static float compareWithDiscreteDescriptor(final DiscreteDescriptor descriptor,
+                                                       final Item item1,
+                                                       final Item item2,
+                                                       final ScoreMethod scoreMethod,
+                                                       final List<Node<Descriptor>> dependencyNodes) {
 
 
         if (isDescriptorInapplicableForItems(descriptor, item1, item2).withDependencyNodes(dependencyNodes)) {
@@ -136,7 +138,18 @@ public class DiscriminantPowerService {
         } else {
             selectedStates2 = item2.getSelectedStatesFor(descriptor);
         }
+        final StateOverlap stateOverlap = calculateStateOverlap(possibleSates, selectedStates1, selectedStates2);
 
+        return getScoreFromCommonAbsentAndPresent(scoreMethod, stateOverlap);
+
+    }
+
+    private static StateOverlap calculateStateOverlap(final Set<State> possibleSates,
+                                                      final Set<State> selectedStates1,
+                                                      final Set<State> selectedStates2) {
+        float commonAbsent = 0; // nb of common points which are absent
+        float commonPresent = 0; // nb of common points which are present
+        float other = 0;
         for (final State state : possibleSates) {
             if (selectedStates1.contains(state)) {
                 if (selectedStates2.contains(state)) {
@@ -152,25 +165,20 @@ public class DiscriminantPowerService {
                 }
             }
         }
+        return new StateOverlap(commonAbsent, commonPresent, other);
+    }
 
-        if (scoreMethod == SOKAL_MICHENER) {
-            if (commonPresent + commonAbsent + other == 0) {
-                return 0;
-            }
-            return 1 - ((commonPresent + commonAbsent) / (commonPresent + commonAbsent + other));
-        }
-        if (scoreMethod == JACCARD) {
-            if (commonPresent + other == 0) {
-                return 0;
-            }
-            return 1 - (commonPresent / (commonPresent + other));
-        }
-        // /scoreMethod == XPER
-        if ((commonPresent == 0) && (other > 0)) {
-            return 1;
-        }
-        return 0;
+    @Getter
+    private static class StateOverlap {
+        private final float commonAbsent; // nb of common points which are absent
+        private final float commonPresent; // nb of common points which are present
+        private final float other;
 
+        private StateOverlap(final float commonAbsent, final float commonPresent, final float other) {
+            this.commonAbsent = commonAbsent;
+            this.commonPresent = commonPresent;
+            this.other = other;
+        }
     }
 
 
@@ -181,7 +189,6 @@ public class DiscriminantPowerService {
             final List<Node<Descriptor>> dependencyNodes,
             final ScoreMethod scoreMethod
     ) {
-        final double out;
         double commonRatio; // ratio of common values which are shared
 
         if (isDescriptorInapplicableForItems(descriptor, item1, item2).withDependencyNodes(dependencyNodes)) {
@@ -198,11 +205,47 @@ public class DiscriminantPowerService {
         }
 
         commonRatio = measure1.commonRatioWithAnotherMeasure(measure2);
-
-
         if (commonRatio <= 0) {
             commonRatio = 0;
         }
+
+
+        return getScoreFromCommonRatio(scoreMethod, commonRatio);
+
+    }
+
+    private static float getScoreFromCommonAbsentAndPresent(final ScoreMethod scoreMethod,
+                                                            final StateOverlap stateOverlap) {
+        final float commonPresent = stateOverlap.getCommonPresent();
+        final float commonAbsent = stateOverlap.getCommonAbsent();
+        final float other = stateOverlap.getOther();
+
+
+        if (scoreMethod == SOKAL_MICHENER) {
+            if (commonPresent + commonAbsent + other == 0) {
+                return 0;
+            }
+            return 1 - ((commonPresent + commonAbsent) / (commonPresent + commonAbsent + other));
+        }
+        if (scoreMethod == JACCARD) {
+            if (commonPresent + other == 0) {
+                return 0;
+            }
+            return 1 - (commonPresent / (commonPresent + other));
+        }
+        if (scoreMethod == XPER) {
+            if ((commonPresent == 0) && (other > 0)) {
+                return 1;
+            }
+            return 0;
+        }
+
+        throw new IllegalStateException(String.format("unsupported score method: %s", scoreMethod.name()));
+    }
+
+    private static double getScoreFromCommonRatio(final ScoreMethod scoreMethod, final double commonRatio) {
+        final double out;
+
 
         switch (scoreMethod) {
             case XPER:
@@ -229,8 +272,6 @@ public class DiscriminantPowerService {
                 }
                 break;
         }
-
         return out;
-
     }
 }
