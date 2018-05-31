@@ -66,7 +66,7 @@ public class DiscriminantPowerService {
             for (int i2 = i1 + 1; i2 < items.size(); i2++) {
                 final Item item2 = items.get(i2);
                 final double tmp;
-                tmp = compareWithNumericalDescriptor((NumericalDescriptor) descriptor, item1, item2
+                tmp = compareWithNumericalDescriptor(descriptor, item1, item2
                         , dependencyNodes// , descriptionMatrix, descriptorNodeMap
                         , scoreMethod
                 );
@@ -94,7 +94,7 @@ public class DiscriminantPowerService {
                 for (int i2 = i1 + 1; i2 < items.size(); i2++) {
                     final Item item2 = items.get(i2);
                     final float tmp =
-                            compareWithCategoricalDescriptor(descriptor, item1, item2, scoreMethod, dependencyNodes);
+                            compareWithDiscreteDescriptor(descriptor, item1, item2, scoreMethod, dependencyNodes);
                     if (tmp >= 0) {
                         result.out += tmp;
                         result.count++;
@@ -107,7 +107,7 @@ public class DiscriminantPowerService {
         return result;
     }
 
-    private static float compareWithCategoricalDescriptor(final DiscreteDescriptor descriptor, final Item item1, final Item item2, final ScoreMethod scoreMethod, final List<Node<Descriptor>> dependencyNodes) {
+    private static float compareWithDiscreteDescriptor(final DiscreteDescriptor descriptor, final Item item1, final Item item2, final ScoreMethod scoreMethod, final List<Node<Descriptor>> dependencyNodes) {
 
         float commonAbsent = 0; // nb of common points which are absent
         float commonPresent = 0; // nb of common points which are present

@@ -26,4 +26,14 @@ public class MeasureTest {
         assertThat(measure2.commonRatioWithAnotherMeasure(measure1)).isEqualTo(0);
     }
 
+    @Test
+    public void should_have_common_ratio_of_one_fifth() {
+        // given
+        final Measure measure1 = Measure.withMin(0).andMax(5);
+        final Measure measure2 = Measure.withMin(2).andMax(3);
+
+        assertThat(measure1.commonRatioWithAnotherMeasure(measure2)).isEqualTo(0.2);
+        assertThat(measure2.commonRatioWithAnotherMeasure(measure1)).isEqualTo(0.2);
+    }
+
 }

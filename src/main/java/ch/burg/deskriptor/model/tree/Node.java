@@ -3,10 +3,12 @@ package ch.burg.deskriptor.model.tree;
 import ch.burg.deskriptor.model.State;
 import lombok.Getter;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
-import java.util.stream.Collectors;
+
+import static java.util.stream.Collectors.toList;
 
 @Getter
 public class Node<T extends Treeable> {
@@ -27,15 +29,16 @@ public class Node<T extends Treeable> {
         this.children = children;
     }
 
-    public static <T extends Treeable> List<Node<T>> flatTree(final List<T> childrenContent) {
+    @SafeVarargs
+    public static <T extends Treeable> List<Node<T>> flatTree(final T ...childrenContent) {
 
-        return childrenContent.stream()
+        return Arrays.stream(childrenContent)
                 .map(content -> new Node<>(
                         content,
                         null,
                         null,
                         null))
-                .collect(Collectors.toList());
+                .collect(toList());
 
     }
 
