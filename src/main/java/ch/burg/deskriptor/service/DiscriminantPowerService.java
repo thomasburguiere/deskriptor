@@ -247,31 +247,18 @@ public class DiscriminantPowerService {
         final double out;
 
 
-        switch (scoreMethod) {
-            case XPER:
-                if ((commonRatio <= 0)) {
-                    out = 1;
-                } else {
-                    out = 0;
-                }
-                break;
-            //
-            case SOKAL_MICHENER:
-                out = 1 - (commonRatio / 100);
-                break;
-            //
-            case JACCARD:
-                out = 1 - (commonRatio / 100);
-                break;
-
-            default:
-                if ((commonRatio <= 0)) {
-                    out = 1;
-                } else {
-                    out = 0;
-                }
-                break;
+        if (scoreMethod == XPER) {
+            if ((commonRatio <= 0)) {
+                out = 1;
+            } else {
+                out = 0;
+            }
+            return out;
         }
-        return out;
+        if (scoreMethod == SOKAL_MICHENER || scoreMethod == JACCARD) {
+            return 1 - (commonRatio / 100);
+        }
+
+        throw new IllegalStateException(String.format("unsupported score method: %s", scoreMethod.name()));
     }
 }
