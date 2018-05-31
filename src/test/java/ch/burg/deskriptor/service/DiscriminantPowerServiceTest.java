@@ -172,7 +172,6 @@ public class DiscriminantPowerServiceTest {
     }
 
     @Test
-    @Ignore
     public void should_return_score_of_0_for_discrete_descriptor_if_measures_intersect_for_two_items_when_method_is_sokal() {
         // given
 
@@ -188,6 +187,7 @@ public class DiscriminantPowerServiceTest {
         final List<Item> items = List.of(rat1, rat2);
 
         // when
-        assertThat(service.calculateDiscriminantPower(tailLength, items, dependencyTreeNodes, SOKAL_MICHENER)).isEqualTo(0.0);
+        assertThat(service.calculateDiscriminantPower(tailLength, items, dependencyTreeNodes, SOKAL_MICHENER)).isGreaterThan(0.9966);
+        assertThat(service.calculateDiscriminantPower(tailLength, items, dependencyTreeNodes, SOKAL_MICHENER)).isLessThan(0.9967);
     }
 }
