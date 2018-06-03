@@ -23,11 +23,15 @@ public class SddHandler extends DefaultHandler {
     @Getter
     private final Set<Item> items = new HashSet<>();
 
-    private boolean inDiscrete = false;
+    private boolean inCategoricalCharacter = false;
     private boolean inRepresentation;
     private boolean inLabel = false;
     private boolean inStateDefinition = false;
     private boolean inCodedDescription = false;
+    private boolean inSummaryData = false;
+    private boolean inCategorical = false;
+    private boolean inState = false;
+    private DiscreteDescriptor currentDiscreteDescriptor;
 
     @Override
     public void startDocument() {
@@ -43,7 +47,7 @@ public class SddHandler extends DefaultHandler {
     public void startElement(final String uri, final String localName, final String qName, final Attributes atts) {
         switch (qName) {
             case "CategoricalCharacter":
-                this.inDiscrete = true;
+                this.inCategoricalCharacter = true;
                 discreteDescriptorBuilder = DiscreteDescriptor.builder()
                         .withId(atts.getValue("id"));
                 break;
@@ -69,6 +73,31 @@ public class SddHandler extends DefaultHandler {
                 itemBuilder = Item.builder();
                 break;
 
+            case "SummaryData":
+                this.inSummaryData = true;
+                break;
+
+            case "Categorical":
+                if (inSummaryData) {
+                    final String currentDescriptorId = atts.getValue("ref");
+                    currentDiscreteDescriptor = (DiscreteDescriptor) descriptors.stream()
+                            .filter(d -> d.getId().equals(currentDescriptorId))
+                            .findFirst().get();
+                }
+                this.inCategorical = true;
+                break;
+
+            case "State":
+                if (inSummaryData && inCategorical) {
+                    final String selectedStateId = atts.getValue("ref");
+                    final State selectedState = currentDiscreteDescriptor.getPossibleSates().stream()
+                            .filter(s -> s.getId().equals(selectedStateId))
+                            .findFirst().get();
+                    itemBuilder.describe(currentDiscreteDescriptor).withSelectedStates(selectedState);
+                }
+                this.inState = true;
+                break;
+
             default:
                 break;
         }
@@ -78,7 +107,7 @@ public class SddHandler extends DefaultHandler {
     public void endElement(final String uri, final String localName, final String qName) {
         switch (qName) {
             case "CategoricalCharacter":
-                this.inDiscrete = false;
+                this.inCategoricalCharacter = false;
                 descriptors.add(discreteDescriptorBuilder.build());
                 break;
 
@@ -100,6 +129,18 @@ public class SddHandler extends DefaultHandler {
                 items.add(itemBuilder.build());
                 break;
 
+            case "SummaryData":
+                this.inSummaryData = false;
+                break;
+
+            case "Categorical":
+                this.inCategorical = false;
+                break;
+
+            case "State":
+                this.inState = false;
+                break;
+
 
             default:
                 break;
@@ -111,13 +152,13 @@ public class SddHandler extends DefaultHandler {
         final String stringContent = new String(ch, start, length);
 
         if (inLabel) {
-            if (inDiscrete && !inStateDefinition) {
+            if (inCategoricalCharacter && !inStateDefinition) {
                 discreteDescriptorBuilder.withName(stringContent);
             }
             if (inStateDefinition) {
                 stateBuilder.name(stringContent);
             }
-            if(inCodedDescription) {
+            if (inCodedDescription) {
                 itemBuilder.withName(stringContent);
             }
         }

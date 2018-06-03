@@ -72,5 +72,25 @@ public class SddParserGenettaTest {
         assertThat(items.size()).isEqualTo(number_of_items_in_genetta_file);
     }
 
+    @Test
+    public void should_get_correct_description_of_items() {
+        // given
+        final Item poiana_leightoni = dataset.getItems().stream()
+                .filter(item -> item.getName().equals("Poiana leightoni"))
+                .findFirst().get();
+
+        final DiscreteDescriptor shape_of_crest = (DiscreteDescriptor) dataset.getDescriptors().stream()
+                .filter(d -> d.getName().equals("Shape of crest of insertion of temporal muscles (upper part of the parietal)"))
+                .findFirst().get();
+
+        final State largeStripe = shape_of_crest.getPossibleSates().stream()
+                .filter(s -> s.getName().equals("large stripe"))
+                .findFirst().get();
+
+        // then
+        assertThat(poiana_leightoni.getDescription().get(shape_of_crest).getSelectedStates()).containsExactly(largeStripe);
+
+    }
+
 
 }
