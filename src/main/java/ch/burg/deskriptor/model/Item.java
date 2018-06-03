@@ -4,6 +4,7 @@ import ch.burg.deskriptor.model.descriptor.Descriptor;
 import ch.burg.deskriptor.model.descriptor.DiscreteDescriptor;
 import ch.burg.deskriptor.model.descriptor.NumericalDescriptor;
 import ch.burg.deskriptor.model.tree.Treeable;
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.ToString;
 
@@ -17,13 +18,16 @@ import static ch.burg.deskriptor.model.DescriptionElement.ofSelectedStates;
 import static java.util.Arrays.asList;
 
 @Getter
-@ToString
+@EqualsAndHashCode(exclude = "id")
+@ToString(exclude = "id")
 public class Item implements Treeable {
 
+    private final String id;
     private final String name;
     private final Map<Descriptor, DescriptionElement> description;
 
     public Item(final ItemBuilder itemBuilder) {
+        this.id = itemBuilder.id;
         this.name = itemBuilder.name;
         this.description = itemBuilder.description;
     }
@@ -45,9 +49,14 @@ public class Item implements Treeable {
     }
 
     public static class ItemBuilder {
+        private String id;
         private String name;
         private Map<Descriptor, DescriptionElement> description = new HashMap<>();
 
+        public ItemBuilder withId(final String id) {
+            this.id = id;
+            return this;
+        }
         public ItemBuilder withName(final String name) {
             this.name = name;
             return this;

@@ -10,13 +10,12 @@ import ch.burg.deskriptor.model.tree.Node;
 import org.junit.Assert;
 import org.junit.Test;
 
-import java.util.Collections;
 import java.util.List;
 
 import static ch.burg.deskriptor.service.DiscriminantPowerService.ScoreMethod.JACCARD;
 import static ch.burg.deskriptor.service.DiscriminantPowerService.ScoreMethod.SOKAL_MICHENER;
 import static ch.burg.deskriptor.service.DiscriminantPowerService.ScoreMethod.XPER;
-import static java.util.Collections.*;
+import static java.util.Collections.EMPTY_LIST;
 import static org.assertj.core.api.Assertions.assertThat;
 
 public class DiscriminantPowerServiceTest {
@@ -27,8 +26,8 @@ public class DiscriminantPowerServiceTest {
             .build();
 
 
-    private final State black = new State("black");
-    private final State white = new State("white");
+    private final State black = State.fromName("black");
+    private final State white = State.fromName("white");
     private final DiscreteDescriptor furColor = DiscreteDescriptor.builder()
             .withName("fur color")
             .withPossibleStates(white, black)
@@ -286,10 +285,21 @@ public class DiscriminantPowerServiceTest {
             public boolean isDiscrete() {
                 return false;
             }
+
+            @Override
+            public String getName() {
+                return null;
+            }
+
+            @Override
+            public String getId() {
+                return null;
+            }
         };
         try {
             service.calculateDiscriminantPower(anotherTypeOfDescriptor, EMPTY_LIST, dependencyTreeNodes, XPER);
             Assert.fail("IllegalStateException should have been thrown");
-        } catch (final IllegalStateException ignored){}
+        } catch (final IllegalStateException ignored) {
+        }
     }
 }

@@ -11,15 +11,15 @@ public class DiscreteDescriptorTest {
     public void should_be_comparable() {
         DiscreteDescriptor dd1 = DiscreteDescriptor.builder()
                 .withName("tail presence")
-                .withPossibleState(new State("yes"))
-                .withPossibleState(new State("yes"))
-                .withPossibleState(new State("no"))
+                .withPossibleState(State.fromName("yes"))
+                .withPossibleState(State.fromName("yes"))
+                .withPossibleState(State.fromName("no"))
                 .build();
 
         DiscreteDescriptor dd2 = DiscreteDescriptor.builder()
                 .withName("tail presence")
-                .withPossibleState(new State("no"))
-                .withPossibleState(new State("yes"))
+                .withPossibleState(State.fromName("no"))
+                .withPossibleState(State.fromName("yes"))
                 .build();
 
         assertThat(dd1.equals(dd2)).isTrue();
@@ -27,14 +27,14 @@ public class DiscreteDescriptorTest {
 
         dd1 = DiscreteDescriptor.builder()
                 .withName("tail presence")
-                .withPossibleState(new State("yes"))
-                .withPossibleState(new State("no"))
+                .withPossibleState(State.fromName("yes"))
+                .withPossibleState(State.fromName("no"))
                 .build();
 
         dd2 = DiscreteDescriptor.builder()
                 .withName("fur color")
-                .withPossibleState(new State("yes"))
-                .withPossibleState(new State("no"))
+                .withPossibleState(State.fromName("yes"))
+                .withPossibleState(State.fromName("no"))
                 .build();
 
         assertThat(dd1.equals(dd2)).isFalse();
@@ -42,13 +42,13 @@ public class DiscreteDescriptorTest {
 
         dd1 = DiscreteDescriptor.builder()
                 .withName("tail presence")
-                .withPossibleState(new State("yes"))
-                .withPossibleState(new State("no"))
+                .withPossibleState(State.fromName("yes"))
+                .withPossibleState(State.fromName("no"))
                 .build();
 
         dd2 = DiscreteDescriptor.builder()
                 .withName("tail presence")
-                .withPossibleState(new State("no"))
+                .withPossibleState(State.fromName("no"))
                 .build();
 
         assertThat(dd1.equals(dd2)).isFalse();
