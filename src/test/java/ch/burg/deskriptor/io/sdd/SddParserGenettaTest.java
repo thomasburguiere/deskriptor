@@ -11,6 +11,7 @@ import org.junit.Test;
 
 import java.io.InputStream;
 import java.util.Set;
+import java.util.function.BiPredicate;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -89,7 +90,16 @@ public class SddParserGenettaTest {
 
         // then
         assertThat(poiana_leightoni.getDescription().get(shape_of_crest).getSelectedStates()).containsExactly(largeStripe);
+    }
 
+    @Test
+    public void should_handle_special_characters() {
+        final DiscreteDescriptor descriptorWithStatesWithSpecialCharacters =
+                (DiscreteDescriptor) dataset.getDescriptors().stream()
+                .filter(d -> d.getName().equals("Cortex of dorsal guard hair (spatula)"))
+                .findFirst().get();
+
+        assertThat(descriptorWithStatesWithSpecialCharacters.getPossibleSates()).hasSize(2);
     }
 
 

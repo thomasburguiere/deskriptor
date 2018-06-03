@@ -30,18 +30,9 @@ public class SddHandler extends DefaultHandler {
     private boolean inCodedDescription = false;
     private boolean inSummaryData = false;
     private boolean inCategorical = false;
-    private boolean inState = false;
     private DiscreteDescriptor currentDiscreteDescriptor;
 
-    @Override
-    public void startDocument() {
-
-    }
-
-    @Override
-    public void endDocument() {
-
-    }
+    private StringBuffer buffer = new StringBuffer();
 
     @Override
     public void startElement(final String uri, final String localName, final String qName, final Attributes atts) {
@@ -57,6 +48,7 @@ public class SddHandler extends DefaultHandler {
 
             case "Label":
                 if (inRepresentation) {
+                    buffer = new StringBuffer();
                     this.inLabel = true;
                 }
                 break;
@@ -107,7 +99,6 @@ public class SddHandler extends DefaultHandler {
                                     }
                             );
                 }
-                this.inState = true;
                 break;
 
             default:
@@ -125,10 +116,6 @@ public class SddHandler extends DefaultHandler {
 
             case "Representation":
                 this.inRepresentation = false;
-                break;
-
-            case "Label":
-                this.inLabel = false;
                 break;
 
             case "StateDefinition":
@@ -149,10 +136,18 @@ public class SddHandler extends DefaultHandler {
                 this.inCategorical = false;
                 break;
 
-            case "State":
-                this.inState = false;
+            case "Label":
+                if (inCategoricalCharacter && !inStateDefinition) {
+                    discreteDescriptorBuilder.withName(buffer.toString());
+                }
+                if (inStateDefinition) {
+                    stateBuilder.name(buffer.toString());
+                }
+                if (inCodedDescription) {
+                    itemBuilder.withName(buffer.toString());
+                }
+                this.inLabel = false;
                 break;
-
 
             default:
                 break;
@@ -164,15 +159,7 @@ public class SddHandler extends DefaultHandler {
         final String stringContent = new String(ch, start, length);
 
         if (inLabel) {
-            if (inCategoricalCharacter && !inStateDefinition) {
-                discreteDescriptorBuilder.withName(stringContent);
-            }
-            if (inStateDefinition) {
-                stateBuilder.name(stringContent);
-            }
-            if (inCodedDescription) {
-                itemBuilder.withName(stringContent);
-            }
+            buffer.append(stringContent);
         }
     }
 }

@@ -433,13 +433,13 @@
                 <States>
                     <StateDefinition id="s41">
                         <Representation>
-                            <Label>thin (less than 1/3 medulla width)</Label>
+                            <Label>thin (&lt; 1/3 medulla width)</Label>
                             <MediaObject ref="m117"/>
                         </Representation>
                     </StateDefinition>
                     <StateDefinition id="s42">
                         <Representation>
-                            <Label>thick (more than 1/3 medulla width)</Label>
+                            <Label>thick (&gt; 1/3 medulla width)</Label>
                             <MediaObject ref="m118"/>
                         </Representation>
                     </StateDefinition>
