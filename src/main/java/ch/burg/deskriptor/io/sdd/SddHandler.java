@@ -1,11 +1,11 @@
 package ch.burg.deskriptor.io.sdd;
 
+import ch.burg.deskriptor.model.Item;
 import ch.burg.deskriptor.model.State;
 import ch.burg.deskriptor.model.descriptor.Descriptor;
 import ch.burg.deskriptor.model.descriptor.DiscreteDescriptor;
 import lombok.Getter;
 import org.xml.sax.Attributes;
-import org.xml.sax.SAXException;
 import org.xml.sax.helpers.DefaultHandler;
 
 import java.util.HashSet;
@@ -14,28 +14,32 @@ import java.util.Set;
 public class SddHandler extends DefaultHandler {
 
     private DiscreteDescriptor.Builder discreteDescriptorBuilder;
+    private Item.ItemBuilder itemBuilder;
 
     @Getter
     private final Set<Descriptor> descriptors = new HashSet<>();
 
+    @Getter
+    private final Set<Item> items = new HashSet<>();
+
     private boolean inDiscrete = false;
     private boolean inRepresentation;
     private boolean inLabel = false;
-    private boolean inStates = false;
     private boolean inStateDefinition = false;
+    private boolean inCodedDescription = false;
 
     @Override
-    public void startDocument() throws SAXException {
+    public void startDocument() {
 
     }
 
     @Override
-    public void endDocument() throws SAXException {
+    public void endDocument() {
 
     }
 
     @Override
-    public void startElement(final String uri, final String localName, final String qName, final Attributes atts) throws SAXException {
+    public void startElement(final String uri, final String localName, final String qName, final Attributes atts) {
         switch (qName) {
             case "CategoricalCharacter":
                 this.inDiscrete = true;
@@ -51,12 +55,13 @@ public class SddHandler extends DefaultHandler {
                 }
                 break;
 
-            case "States":
-                this.inStates = true;
-                break;
-
             case "StateDefinition":
                 this.inStateDefinition = true;
+                break;
+
+            case "CodedDescription":
+                this.inCodedDescription = true;
+                itemBuilder = Item.builder();
                 break;
 
             default:
@@ -80,12 +85,13 @@ public class SddHandler extends DefaultHandler {
                 this.inLabel = false;
                 break;
 
-            case "States":
-                this.inStates = false;
-                break;
-
             case "StateDefinition":
                 this.inStateDefinition = false;
+                break;
+
+            case "CodedDescription":
+                this.inCodedDescription = false;
+                items.add(itemBuilder.build());
                 break;
 
 
@@ -95,7 +101,7 @@ public class SddHandler extends DefaultHandler {
     }
 
     @Override
-    public void characters(final char[] ch, final int start, final int length) throws SAXException {
+    public void characters(final char[] ch, final int start, final int length) {
         final String stringContent = new String(ch, start, length);
 
         if (inLabel) {
@@ -104,6 +110,9 @@ public class SddHandler extends DefaultHandler {
             }
             if (inStateDefinition) {
                 discreteDescriptorBuilder.withPossibleState(new State(stringContent));
+            }
+            if(inCodedDescription) {
+                itemBuilder.withName(stringContent);
             }
         }
     }
