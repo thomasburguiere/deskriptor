@@ -13,6 +13,7 @@ import java.util.Set;
 
 public class SddHandler extends DefaultHandler {
 
+    private State.StateBuilder stateBuilder;
     private DiscreteDescriptor.Builder discreteDescriptorBuilder;
     private Item.ItemBuilder itemBuilder;
 
@@ -57,6 +58,9 @@ public class SddHandler extends DefaultHandler {
 
             case "StateDefinition":
                 this.inStateDefinition = true;
+                stateBuilder = State.builder()
+                        .id(atts.getValue("id"));
+
                 break;
 
             case "CodedDescription":
@@ -87,6 +91,7 @@ public class SddHandler extends DefaultHandler {
 
             case "StateDefinition":
                 this.inStateDefinition = false;
+                discreteDescriptorBuilder.withPossibleState(stateBuilder.build());
                 break;
 
             case "CodedDescription":
@@ -109,7 +114,7 @@ public class SddHandler extends DefaultHandler {
                 discreteDescriptorBuilder.withName(stringContent);
             }
             if (inStateDefinition) {
-                discreteDescriptorBuilder.withPossibleState(new State(stringContent));
+                stateBuilder.name(stringContent);
             }
             if(inCodedDescription) {
                 itemBuilder.withName(stringContent);

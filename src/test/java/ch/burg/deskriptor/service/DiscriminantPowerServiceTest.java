@@ -285,6 +285,11 @@ public class DiscriminantPowerServiceTest {
             public boolean isDiscrete() {
                 return false;
             }
+
+            @Override
+            public String getName() {
+                return null;
+            }
         };
         try {
             service.calculateDiscriminantPower(anotherTypeOfDescriptor, EMPTY_LIST, dependencyTreeNodes, XPER);
