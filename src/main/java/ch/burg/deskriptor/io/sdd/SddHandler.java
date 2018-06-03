@@ -80,9 +80,14 @@ public class SddHandler extends DefaultHandler {
             case "Categorical":
                 if (inSummaryData) {
                     final String currentDescriptorId = atts.getValue("ref");
-                    currentDiscreteDescriptor = (DiscreteDescriptor) descriptors.stream()
+                    descriptors.stream()
                             .filter(d -> d.getId().equals(currentDescriptorId))
-                            .findFirst().get();
+                            .findFirst()
+                            .ifPresentOrElse(
+                                    descriptor -> currentDiscreteDescriptor = (DiscreteDescriptor) descriptor,
+                                    () -> {
+                                        throw new IllegalStateException();
+                                    });
                 }
                 this.inCategorical = true;
                 break;
@@ -90,10 +95,17 @@ public class SddHandler extends DefaultHandler {
             case "State":
                 if (inSummaryData && inCategorical) {
                     final String selectedStateId = atts.getValue("ref");
-                    final State selectedState = currentDiscreteDescriptor.getPossibleSates().stream()
+                    currentDiscreteDescriptor.getPossibleSates().stream()
                             .filter(s -> s.getId().equals(selectedStateId))
-                            .findFirst().get();
-                    itemBuilder.describe(currentDiscreteDescriptor).withSelectedStates(selectedState);
+                            .findFirst()
+                            .ifPresentOrElse(
+                                    selectSt -> itemBuilder
+                                            .describe(currentDiscreteDescriptor)
+                                            .withSelectedStates(selectSt)
+                                    , () -> {
+                                        throw new IllegalStateException();
+                                    }
+                            );
                 }
                 this.inState = true;
                 break;
