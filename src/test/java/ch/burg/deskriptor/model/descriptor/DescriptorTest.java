@@ -15,7 +15,7 @@ public class DescriptorTest {
     public void should_be_able_to_build_descriptor_with_builder() {
         final DiscreteDescriptor discreteDescriptor = DiscreteDescriptor.builder()
                 .withName("tail presence")
-                .withPossibleStates(new State("yes"), new State("no"))
+                .withPossibleStates(State.fromName("yes"), State.fromName("no"))
                 .build();
 
         final String expectedString = "DiscreteDescriptor(name=tail presence, possibleSates=[State(name=yes), State(name=no)])";
@@ -26,7 +26,7 @@ public class DescriptorTest {
     public void should_be_able_to_build_numerical_descriptor_with_builder() {
         final DiscreteDescriptor discreteDescriptor = DiscreteDescriptor.builder()
                 .withName("tail presence")
-                .withPossibleStates(new State("yes"), new State("no"))
+                .withPossibleStates(State.fromName("yes"), State.fromName("no"))
                 .build();
 
         final String expectedString = "DiscreteDescriptor(name=tail presence, possibleSates=[State(name=yes), State(name=no)])";

@@ -50,7 +50,7 @@ public class DiscreteDescriptor implements Descriptor {
         public Builder withPossibleStates(final String... possibleStatesNames) {
 
             this.possibleStates = Arrays.stream(possibleStatesNames)
-                    .map(State::new)
+                    .map(State::fromName)
                     .collect(Collectors.toSet());
             return this;
         }

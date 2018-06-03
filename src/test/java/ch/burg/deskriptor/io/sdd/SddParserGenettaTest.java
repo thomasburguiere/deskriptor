@@ -15,7 +15,6 @@ public class SddParserGenettaTest {
     private final SddParser parser = new SddParser();
 
 
-
     @Test
     public void should_parse_and_find_correct_number_of_discrete_descriptor() throws Exception {
 

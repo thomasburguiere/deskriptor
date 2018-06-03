@@ -19,8 +19,8 @@ import static org.assertj.core.api.Assertions.assertThat;
 public class InapplicabilityCalculatorTest {
 
 
-    private final State present = new State("present");
-    private final State absent = new State("absent");
+    private final State present = State.fromName("present");
+    private final State absent = State.fromName("absent");
     private final DiscreteDescriptor tailPresence = DiscreteDescriptor.builder().withName("tailPresence")
             .withPossibleStates(present, absent)
             .build();

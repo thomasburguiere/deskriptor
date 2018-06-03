@@ -20,15 +20,15 @@ public class ItemTest {
     @Test
     public void should_be_able_to_describe_item_with_discrete_descriptor() {
         // given
-        final State present = new State("present");
-        final State absent = new State("absent");
+        final State present = State.fromName("present");
+        final State absent = State.fromName("absent");
         final DiscreteDescriptor tailPresence = DiscreteDescriptor.builder()
                 .withName("tail presence")
                 .withPossibleStates(present, absent)
                 .build();
 
-        final State black = new State("black");
-        final State white = new State("white");
+        final State black = State.fromName("black");
+        final State white = State.fromName("white");
         final DiscreteDescriptor furColor = DiscreteDescriptor.builder()
                 .withName("fur color")
                 .withPossibleStates(white, black)
