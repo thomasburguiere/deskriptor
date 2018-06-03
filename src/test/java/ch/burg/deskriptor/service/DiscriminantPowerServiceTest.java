@@ -290,6 +290,11 @@ public class DiscriminantPowerServiceTest {
             public String getName() {
                 return null;
             }
+
+            @Override
+            public String getId() {
+                return null;
+            }
         };
         try {
             service.calculateDiscriminantPower(anotherTypeOfDescriptor, EMPTY_LIST, dependencyTreeNodes, XPER);

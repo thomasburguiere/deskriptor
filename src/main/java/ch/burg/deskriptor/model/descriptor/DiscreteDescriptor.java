@@ -11,15 +11,17 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 @Getter
-@ToString
-@EqualsAndHashCode
+@ToString(exclude = "id")
+@EqualsAndHashCode(exclude = "id")
 public class DiscreteDescriptor implements Descriptor {
 
+    private final String id;
     private final String name;
 
     private final Set<State> possibleSates;
 
     public DiscreteDescriptor(final Builder builder) {
+        this.id = builder.id;
         this.name = builder.name;
         this.possibleSates = builder.possibleStates;
     }
@@ -39,8 +41,14 @@ public class DiscreteDescriptor implements Descriptor {
     }
 
     public static class Builder {
+        private String id;
         private String name;
         private Set<State> possibleStates = new HashSet<>();
+
+        public Builder withId(final String id) {
+            this.id = id;
+            return this;
+        }
 
         public Builder withName(final String name) {
             this.name = name;

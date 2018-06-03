@@ -41,11 +41,11 @@ public class SddParserGenettaTest {
 
     @Test
     public void should_find_correct_states() {
-        final DiscreteDescriptor descriptor = (DiscreteDescriptor) dataset.getDescriptors().stream()
+        final DiscreteDescriptor shapeOfCrest = (DiscreteDescriptor) dataset.getDescriptors().stream()
                 .filter(d -> d.getName().equals("Shape of crest of insertion of temporal muscles (upper part of the parietal)"))
                 .findFirst().get();
 
-        final Set<State> possibleSates = descriptor.getPossibleSates();
+        final Set<State> possibleSates = shapeOfCrest.getPossibleSates();
 
         assertThat(possibleSates.size()).isEqualTo(3);
         assertThat(possibleSates).containsOnly(

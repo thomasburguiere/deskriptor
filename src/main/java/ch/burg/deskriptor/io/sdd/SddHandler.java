@@ -44,7 +44,8 @@ public class SddHandler extends DefaultHandler {
         switch (qName) {
             case "CategoricalCharacter":
                 this.inDiscrete = true;
-                discreteDescriptorBuilder = DiscreteDescriptor.builder();
+                discreteDescriptorBuilder = DiscreteDescriptor.builder()
+                        .withId(atts.getValue("id"));
                 break;
             case "Representation":
                 this.inRepresentation = true;
