@@ -32,7 +32,7 @@ public class SddHandler extends DefaultHandler {
     private boolean inCategorical = false;
     private DiscreteDescriptor currentDiscreteDescriptor;
 
-    private StringBuffer buffer = new StringBuffer();
+    private StringBuilder buffer = new StringBuilder();
 
     @Override
     public void startElement(final String uri, final String localName, final String qName, final Attributes atts) {
@@ -48,7 +48,7 @@ public class SddHandler extends DefaultHandler {
 
             case "Label":
                 if (inRepresentation) {
-                    buffer = new StringBuffer();
+                    buffer = new StringBuilder();
                     this.inLabel = true;
                 }
                 break;
