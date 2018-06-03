@@ -9,6 +9,7 @@ import org.xml.sax.Attributes;
 import org.xml.sax.helpers.DefaultHandler;
 
 import java.util.HashSet;
+import java.util.Optional;
 import java.util.Set;
 
 public class SddHandler extends DefaultHandler {
@@ -30,6 +31,9 @@ public class SddHandler extends DefaultHandler {
     private boolean inCodedDescription = false;
     private boolean inSummaryData = false;
     private boolean inCategorical = false;
+
+    private int descriptorTreeCount = 0;
+
     private DiscreteDescriptor currentDiscreteDescriptor;
 
     private StringBuilder buffer = new StringBuilder();
@@ -72,14 +76,15 @@ public class SddHandler extends DefaultHandler {
             case "Categorical":
                 if (inSummaryData) {
                     final String currentDescriptorId = atts.getValue("ref");
-                    descriptors.stream()
+                    final Optional<Descriptor> optionalDescriptor = descriptors.stream()
                             .filter(d -> d.getId().equals(currentDescriptorId))
-                            .findFirst()
-                            .ifPresentOrElse(
-                                    descriptor -> currentDiscreteDescriptor = (DiscreteDescriptor) descriptor,
-                                    () -> {
-                                        throw new IllegalStateException();
-                                    });
+                            .findFirst();
+
+                    if (optionalDescriptor.isPresent()) {
+                        currentDiscreteDescriptor = (DiscreteDescriptor) optionalDescriptor.get();
+                    } else {
+                        throw new IllegalStateException();
+                    }
                 }
                 this.inCategorical = true;
                 break;
@@ -87,17 +92,15 @@ public class SddHandler extends DefaultHandler {
             case "State":
                 if (inSummaryData && inCategorical) {
                     final String selectedStateId = atts.getValue("ref");
-                    currentDiscreteDescriptor.getPossibleSates().stream()
+                    final Optional<State> optionalState = currentDiscreteDescriptor.getPossibleSates().stream()
                             .filter(s -> s.getId().equals(selectedStateId))
-                            .findFirst()
-                            .ifPresentOrElse(
-                                    selectSt -> itemBuilder
-                                            .describe(currentDiscreteDescriptor)
-                                            .withSelectedStates(selectSt)
-                                    , () -> {
-                                        throw new IllegalStateException();
-                                    }
-                            );
+                            .findFirst();
+                    if (optionalState.isPresent()) {
+                        itemBuilder.describe(currentDiscreteDescriptor)
+                                .withSelectedStates(optionalState.get());
+                    } else {
+                        throw new IllegalStateException();
+                    }
                 }
                 break;
 
