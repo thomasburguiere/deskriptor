@@ -4,8 +4,8 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
-    <groupId>ch.burg</groupId>
-    <artifactId>deskriptor</artifactId>
+    <groupId>ch.burg.deskriptor</groupId>
+    <artifactId>deskriptor-engine</artifactId>
     <version>1.0</version>
 
     <properties>
