@@ -4,7 +4,7 @@ import ch.burg.deskriptor.engine.model.Item;
 import ch.burg.deskriptor.engine.model.State;
 import ch.burg.deskriptor.engine.model.descriptor.Descriptor;
 import ch.burg.deskriptor.engine.model.descriptor.DiscreteDescriptor;
-import ch.burg.deskriptor.engine.model.tree.Node;
+import ch.burg.deskriptor.engine.model.tree.DescriptorNode;
 
 import java.util.List;
 import java.util.Optional;
@@ -14,7 +14,7 @@ class InapplicabilityCalculator {
 
     private final Descriptor descriptor;
     private final Item[] items;
-    private List<Node<Descriptor>> dependencyNodes;
+    private List<DescriptorNode> dependencyNodes;
 
     private InapplicabilityCalculator(final Descriptor descriptor, final Item[] items) {
         this.descriptor = descriptor;
@@ -26,13 +26,13 @@ class InapplicabilityCalculator {
         return new InapplicabilityCalculator(descriptor, items);
     }
 
-    boolean withDependencyNodes(List<Node<Descriptor>> dependencyNodes) {
+    boolean withDependencyNodes(List<DescriptorNode> dependencyNodes) {
         this.dependencyNodes = dependencyNodes;
         return calculate();
     }
 
     private boolean calculate() {
-        final Optional<Node<Descriptor>> node = Node.getNodeContainingContentInList(descriptor, dependencyNodes);
+        final Optional<DescriptorNode> node = DescriptorNode.getNodeContainingContentInList(descriptor, dependencyNodes);
         if (node.isPresent()) {
             for (final Item item : items) {
                 if (isDescriptorInNodeInapplicableForItem(node.get(), item)) {
@@ -44,8 +44,8 @@ class InapplicabilityCalculator {
     }
 
 
-    static boolean isDescriptorInNodeInapplicableForItem(final Node<Descriptor> descriptorNode, final Item item) {
-        final Node<Descriptor> parentNode = descriptorNode.getParent();
+    static boolean isDescriptorInNodeInapplicableForItem(final DescriptorNode descriptorNode, final Item item) {
+        final DescriptorNode parentNode = descriptorNode.getParent();
 
         if (parentNode != null) {
             final Set<State> inapplicableStates = descriptorNode.getInapplicableState();

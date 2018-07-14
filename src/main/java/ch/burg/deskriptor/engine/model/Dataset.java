@@ -1,7 +1,7 @@
 package ch.burg.deskriptor.engine.model;
 
 import ch.burg.deskriptor.engine.model.descriptor.Descriptor;
-import ch.burg.deskriptor.engine.model.tree.Node;
+import ch.burg.deskriptor.engine.model.tree.DescriptorNode;
 import lombok.Builder;
 import lombok.Getter;
 
@@ -15,11 +15,11 @@ public class Dataset {
     private final Set<Descriptor> descriptors;
     private final Set<Item> items;
 
-    private final List<Node<Descriptor>> descriptorDependencyNodes;
+    private final List<DescriptorNode> descriptorDependencyNodes;
 
     public Dataset(final Set<Descriptor> descriptors,
                    final Set<Item> items,
-                   final List<Node<Descriptor>> descriptorDependencyNodes) {
+                   final List<DescriptorNode> descriptorDependencyNodes) {
         this.descriptors = descriptors;
         this.items = items;
         this.descriptorDependencyNodes = descriptorDependencyNodes;

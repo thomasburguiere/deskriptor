@@ -6,7 +6,7 @@ import ch.burg.deskriptor.engine.model.State;
 import ch.burg.deskriptor.engine.model.descriptor.Descriptor;
 import ch.burg.deskriptor.engine.model.descriptor.DiscreteDescriptor;
 import ch.burg.deskriptor.engine.model.descriptor.NumericalDescriptor;
-import ch.burg.deskriptor.engine.model.tree.Node;
+import ch.burg.deskriptor.engine.model.tree.DescriptorNode;
 import lombok.Getter;
 
 import java.util.List;
@@ -25,7 +25,7 @@ public class DiscriminantPowerService {
 
     public Double calculateDiscriminantPower(final Descriptor descriptor,
                                              final List<Item> items,
-                                             final List<Node<Descriptor>> dependencyNodes,
+                                             final List<DescriptorNode> dependencyNodes,
                                              final ScoreMethod scoreMethod) {
         final double out;
         final int count;
@@ -59,7 +59,7 @@ public class DiscriminantPowerService {
 
     private CalculationResult dPowerForNumericalDescriptor(final NumericalDescriptor descriptor,
                                                            final List<Item> items,
-                                                           final List<Node<Descriptor>> dependencyNodes,
+                                                           final List<DescriptorNode> dependencyNodes,
                                                            final ScoreMethod scoreMethod) {
         final CalculationResult result = new CalculationResult();
         for (int i1 = 0; i1 < items.size() - 1; i1++) {
@@ -82,7 +82,7 @@ public class DiscriminantPowerService {
 
     private CalculationResult dPowerForDiscreteDescriptor(final DiscreteDescriptor descriptor,
                                                           final List<Item> items,
-                                                          final List<Node<Descriptor>> dependencyNodes,
+                                                          final List<DescriptorNode> dependencyNodes,
                                                           final ScoreMethod scoreMethod) {
         final CalculationResult result = new CalculationResult();
 
@@ -112,7 +112,7 @@ public class DiscriminantPowerService {
                                                        final Item item1,
                                                        final Item item2,
                                                        final ScoreMethod scoreMethod,
-                                                       final List<Node<Descriptor>> dependencyNodes) {
+                                                       final List<DescriptorNode> dependencyNodes) {
 
 
         if (InapplicabilityCalculator.isDescriptorInapplicableForItems(descriptor, item1, item2).withDependencyNodes(dependencyNodes)) {
@@ -185,7 +185,7 @@ public class DiscriminantPowerService {
             final NumericalDescriptor descriptor,
             final Item item1,
             final Item item2,
-            final List<Node<Descriptor>> dependencyNodes,
+            final List<DescriptorNode> dependencyNodes,
             final ScoreMethod scoreMethod
     ) {
         double commonRatio; // ratio of common values which are shared

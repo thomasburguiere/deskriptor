@@ -6,7 +6,7 @@ import ch.burg.deskriptor.engine.model.State;
 import ch.burg.deskriptor.engine.model.descriptor.Descriptor;
 import ch.burg.deskriptor.engine.model.descriptor.DiscreteDescriptor;
 import ch.burg.deskriptor.engine.model.descriptor.NumericalDescriptor;
-import ch.burg.deskriptor.engine.model.tree.Node;
+import ch.burg.deskriptor.engine.model.tree.DescriptorNode;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -33,7 +33,7 @@ public class DiscriminantPowerServiceTest {
             .withPossibleStates(white, black)
             .build();
 
-    private final List<Node<Descriptor>> dependencyTreeNodes = Node.flatTree(furColor, tailLength);
+    private final List<DescriptorNode> dependencyTreeNodes = DescriptorNode.flatTree(furColor, tailLength);
 
 
     private final DiscriminantPowerService service = new DiscriminantPowerService();
