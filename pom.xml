@@ -6,7 +6,7 @@
 
     <groupId>ch.burg.deskriptor</groupId>
     <artifactId>deskriptor-engine</artifactId>
-    <version>1.1-SNAPSHOT</version>
+    <version>1.1.0</version>
 
     <properties>
 
