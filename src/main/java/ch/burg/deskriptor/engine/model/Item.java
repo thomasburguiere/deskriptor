@@ -3,7 +3,6 @@ package ch.burg.deskriptor.engine.model;
 import ch.burg.deskriptor.engine.model.descriptor.Descriptor;
 import ch.burg.deskriptor.engine.model.descriptor.DiscreteDescriptor;
 import ch.burg.deskriptor.engine.model.descriptor.NumericalDescriptor;
-import ch.burg.deskriptor.engine.model.tree.Treeable;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.ToString;
@@ -20,7 +19,7 @@ import static java.util.Arrays.asList;
 @Getter
 @EqualsAndHashCode(exclude = "id")
 @ToString(exclude = "id")
-public class Item implements Treeable {
+public class Item {
 
     private final String id;
     private final String name;
@@ -57,6 +56,7 @@ public class Item implements Treeable {
             this.id = id;
             return this;
         }
+
         public ItemBuilder withName(final String name) {
             this.name = name;
             return this;
@@ -74,6 +74,7 @@ public class Item implements Treeable {
 
             private final ItemBuilder parentItemItemBuilder;
             private final DiscreteDescriptor discreteDescriptor;
+
             public DiscreteDescriptionBuilder(final ItemBuilder parentItemItemBuilder, final DiscreteDescriptor discreteDescriptor) {
                 this.parentItemItemBuilder = parentItemItemBuilder;
                 this.discreteDescriptor = discreteDescriptor;

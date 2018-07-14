@@ -1,6 +1,7 @@
 package ch.burg.deskriptor.engine.model.tree;
 
 import ch.burg.deskriptor.engine.model.State;
+import ch.burg.deskriptor.engine.model.descriptor.Descriptor;
 import lombok.Getter;
 
 import java.util.Arrays;
@@ -11,17 +12,16 @@ import java.util.Set;
 import static java.util.stream.Collectors.toList;
 
 @Getter
-public class Node<T extends Treeable> {
-
-    private final T content;
-    private final Node<T> parent;
+public class DescriptorNode {
+    private final Descriptor content;
+    private final DescriptorNode parent;
     private final Set<State> inapplicableState;
-    private final List<Node<T>> children;
+    private final List<DescriptorNode> children;
 
-    public Node(final T content,
-                final Node<T> parent,
+    public DescriptorNode(final Descriptor content,
+                final DescriptorNode parent,
                 final Set<State> inapplicableState,
-                final List<Node<T>> children) {
+                final List<DescriptorNode> children) {
 
         this.content = content;
         this.parent = parent;
@@ -29,11 +29,10 @@ public class Node<T extends Treeable> {
         this.children = children;
     }
 
-    @SafeVarargs
-    public static <T extends Treeable> List<Node<T>> flatTree(final T ...childrenContent) {
+    public static List<DescriptorNode> flatTree(final Descriptor... childrenContent) {
 
         return Arrays.stream(childrenContent)
-                .map(content -> new Node<>(
+                .map(content -> new DescriptorNode(
                         content,
                         null,
                         null,
@@ -42,11 +41,10 @@ public class Node<T extends Treeable> {
 
     }
 
-    public static <T extends Treeable> Optional<Node<T>> getNodeContainingContentInList(
-            final T content,
-            final List<Node<T>> list) {
+    public static Optional<DescriptorNode> getNodeContainingContentInList(
+            final Descriptor content,
+            final List<DescriptorNode> list) {
 
         return list.stream().filter(n -> n.content.equals(content)).findFirst();
     }
-
 }

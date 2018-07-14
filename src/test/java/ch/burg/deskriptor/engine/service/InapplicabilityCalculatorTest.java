@@ -3,10 +3,9 @@ package ch.burg.deskriptor.engine.service;
 import ch.burg.deskriptor.engine.model.Item;
 import ch.burg.deskriptor.engine.model.Measure;
 import ch.burg.deskriptor.engine.model.State;
-import ch.burg.deskriptor.engine.model.descriptor.Descriptor;
 import ch.burg.deskriptor.engine.model.descriptor.DiscreteDescriptor;
 import ch.burg.deskriptor.engine.model.descriptor.NumericalDescriptor;
-import ch.burg.deskriptor.engine.model.tree.Node;
+import ch.burg.deskriptor.engine.model.tree.DescriptorNode;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -29,8 +28,8 @@ public class InapplicabilityCalculatorTest {
             .withMeasurementUnit("cm")
             .build();
 
-    private final Node<Descriptor> tailPresenceNode = new Node<>(tailPresence, null, null, new ArrayList<>());
-    private final Node<Descriptor> tailLengthNode = new Node<>(tailLength, tailPresenceNode, Set.of(absent), null);
+    private final DescriptorNode tailPresenceNode = new DescriptorNode(tailPresence, null, null, new ArrayList<>());
+    private final DescriptorNode tailLengthNode = new DescriptorNode(tailLength, tailPresenceNode, Set.of(absent), null);
 
 
     private final Item normalRat1 = Item.builder()
