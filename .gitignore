@@ -1,4 +1,13 @@
+#intellij
 *iml
 .idea
 
+#vscode/eclipse
+.classpath
+.factorypath
+.project
+.settings
+
+#java
 target
+
