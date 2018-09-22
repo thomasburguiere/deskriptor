@@ -1,12 +1,16 @@
 package ch.burg.deskriptor.engine.model.descriptor;
 
+import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.ToString;
 
 @Getter
 @ToString(exclude = "id")
 @EqualsAndHashCode(exclude = "id")
+@NoArgsConstructor(force = true)
+@AllArgsConstructor
 public class NumericalDescriptor implements Descriptor {
 
     private final String id;

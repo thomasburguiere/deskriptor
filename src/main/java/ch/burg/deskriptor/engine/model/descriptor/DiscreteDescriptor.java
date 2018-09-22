@@ -1,8 +1,10 @@
 package ch.burg.deskriptor.engine.model.descriptor;
 
 import ch.burg.deskriptor.engine.model.State;
+import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.ToString;
 
 import java.util.Arrays;
@@ -13,6 +15,8 @@ import java.util.stream.Collectors;
 @Getter
 @ToString(exclude = "id")
 @EqualsAndHashCode(exclude = "id")
+@NoArgsConstructor(force = true)
+@AllArgsConstructor
 public class DiscreteDescriptor implements Descriptor {
 
     private final String id;

@@ -6,11 +6,11 @@
 
     <groupId>ch.burg.deskriptor</groupId>
     <artifactId>deskriptor-engine</artifactId>
-    <version>1.1.0</version>
+    <version>1.1.1-SNAPSHOT</version>
 
     <properties>
 
-        <lombok.version>1.16.20</lombok.version>
+        <lombok.version>1.18.2</lombok.version>
         <assertj-core.version>3.9.0</assertj-core.version>
         <junit.version>4.12</junit.version>
     </properties>

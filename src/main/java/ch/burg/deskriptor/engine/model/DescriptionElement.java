@@ -1,10 +1,12 @@
 package ch.burg.deskriptor.engine.model;
 
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 import java.util.Set;
 
 @Getter
+@NoArgsConstructor(force = true)
 public class DescriptionElement {
 
     private final Set<State> selectedStates;
@@ -26,7 +28,7 @@ public class DescriptionElement {
         return new DescriptionElement(null, measure, false);
     }
 
-    public static DescriptionElement unknown(){
+    public static DescriptionElement unknown() {
         return new DescriptionElement(null, null, true);
     }
 

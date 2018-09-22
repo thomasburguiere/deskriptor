@@ -3,8 +3,10 @@ package ch.burg.deskriptor.engine.model;
 import ch.burg.deskriptor.engine.model.descriptor.Descriptor;
 import ch.burg.deskriptor.engine.model.descriptor.DiscreteDescriptor;
 import ch.burg.deskriptor.engine.model.descriptor.NumericalDescriptor;
+import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.ToString;
 
 import java.util.HashMap;
@@ -19,6 +21,8 @@ import static java.util.Arrays.asList;
 @Getter
 @EqualsAndHashCode(exclude = "id")
 @ToString(exclude = "id")
+@NoArgsConstructor(force = true)
+@AllArgsConstructor
 public class Item {
 
     private final String id;
@@ -70,6 +74,10 @@ public class Item {
             return new DiscreteDescriptionBuilder(this, descriptor);
         }
 
+        public NumericalDescriptorBuilder describe(final NumericalDescriptor numericalDescriptor) {
+            return new NumericalDescriptorBuilder(this, numericalDescriptor);
+        }
+
         public static class DiscreteDescriptionBuilder {
 
             private final ItemBuilder parentItemItemBuilder;
@@ -86,10 +94,6 @@ public class Item {
                 return parentItemItemBuilder;
             }
 
-        }
-
-        public NumericalDescriptorBuilder describe(final NumericalDescriptor numericalDescriptor) {
-            return new NumericalDescriptorBuilder(this, numericalDescriptor);
         }
 
         public static class NumericalDescriptorBuilder {

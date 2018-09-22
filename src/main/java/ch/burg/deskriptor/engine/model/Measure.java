@@ -1,13 +1,20 @@
 package ch.burg.deskriptor.engine.model;
 
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.ToString;
 
 @Getter
 @ToString
+@NoArgsConstructor(force = true)
 public class Measure {
     private final Double min;
     private final Double max;
+
+    private Measure(final Double min, final Double max) {
+        this.min = min;
+        this.max = max;
+    }
 
     public static Measure ofMinAndMax(final Double minAndMax) {
         return new Measure(minAndMax, minAndMax);
@@ -46,12 +53,6 @@ public class Measure {
             res = 0;
         }
         return res;
-    }
-
-
-    private Measure(final Double min, final Double max) {
-        this.min = min;
-        this.max = max;
     }
 
     public static class IntermediateBuilder {
