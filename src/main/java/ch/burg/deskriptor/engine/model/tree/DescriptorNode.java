@@ -2,7 +2,6 @@ package ch.burg.deskriptor.engine.model.tree;
 
 import ch.burg.deskriptor.engine.model.State;
 import ch.burg.deskriptor.engine.model.descriptor.Descriptor;
-import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 

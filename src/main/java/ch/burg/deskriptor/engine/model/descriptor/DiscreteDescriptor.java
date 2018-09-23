@@ -8,6 +8,7 @@ import lombok.NoArgsConstructor;
 import lombok.ToString;
 
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -69,6 +70,11 @@ public class DiscreteDescriptor implements Descriptor {
 
         public Builder withPossibleStates(final State... possibleStates) {
             this.possibleStates = new HashSet<>(Arrays.asList(possibleStates));
+            return this;
+        }
+
+        public Builder withPossibleStates(final Collection<State> possibleStates) {
+            this.possibleStates = new HashSet<>(possibleStates);
             return this;
         }
 
